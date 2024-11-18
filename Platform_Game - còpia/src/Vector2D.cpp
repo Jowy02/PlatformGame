@@ -52,3 +52,18 @@ std::ostream& operator<<(std::ostream& os, const Vector2D& vec) {
     os << "(" << vec.x << ", " << vec.y << ")";
     return os;
 }
+
+bool Vector2D::operator==(const Vector2D& other) const {
+    return x == other.x && y == other.y;
+}
+
+bool Vector2D::operator!=(const Vector2D& other) const {
+    return x != other.x || y != other.y;
+}
+
+bool Vector2D::operator<(const Vector2D& other) const {
+    if (x != other.x) {
+        return x < other.x;
+    }
+    return y < other.y;
+}

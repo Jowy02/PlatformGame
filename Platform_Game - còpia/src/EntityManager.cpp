@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Log.h"
 #include "Item.h"
+#include "Enemy.h"
 
 EntityManager::EntityManager() : Module()
 {
