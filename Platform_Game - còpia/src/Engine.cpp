@@ -226,7 +226,8 @@ void Engine::FinishUpdate()
     std::stringstream ss;
     if(!preuba)
     { 
-        ss << gameTitle << ": Av.FPS: " << std::fixed << std::setprecision(2) << averageFps
+        ss << scene.get()->GetTilePosDebug()
+        << gameTitle << ": Av.FPS: " << std::fixed << std::setprecision(2) << averageFps
         << " Last sec frames: " << framesPerSecond
         << " Last dt: " << std::fixed << std::setprecision(3) << dt
         << " Time since startup: " << secondsSinceStartup
@@ -239,10 +240,6 @@ void Engine::FinishUpdate()
 
     }
     std::string titleStr = ss.str();
-
-
-
-
 
     window.get()->SetTitle(titleStr.c_str());
 }

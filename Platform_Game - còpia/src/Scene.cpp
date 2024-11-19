@@ -84,7 +84,7 @@ bool Scene::Update(float dt)
 
 	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
 	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
-		mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
+																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
 
 
 	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
