@@ -69,4 +69,5 @@ public:
 
 	Animation dead;
 
+	Vector2D savePos;
 };

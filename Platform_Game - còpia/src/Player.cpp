@@ -23,6 +23,7 @@ bool Player::Awake() {
 
 	//L03: TODO 2: Initialize Player parameters
 	position = Vector2D(0, 0);
+	savePos = Vector2D(0, 0);
 	return true;
 
 }
@@ -33,6 +34,7 @@ bool Player::Start() {
 	texture = Engine::GetInstance().textures.get()->Load(parameters.attribute("texture").as_string());
 	position.setX(parameters.attribute("x").as_int());
 	position.setY(parameters.attribute("y").as_int());
+	savePos = position;
 	texW = parameters.attribute("w").as_int();
 	texH = parameters.attribute("h").as_int();
 
@@ -69,8 +71,6 @@ bool Player::Start() {
 bool Player::Update(float dt)
 {	
 	
-
-
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	// L08 TODO 5: Add physics to the player - updated player position using physics
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F10) == KEY_DOWN){ 
@@ -87,6 +87,17 @@ bool Player::Update(float dt)
 			oneTime = false;
 			godmode = true;
 		}
+	}
+
+	//SAVE
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && deadAnimation ==false ) {
+		savePos = GetPosition();
+	}
+	//LOAD
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) {
+		deadAnimation = false;
+		oneTime = false;
+		SetPosition(savePos);
 	}
 
 	if(godmode==false){	
