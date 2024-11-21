@@ -71,7 +71,7 @@ bool Scene::Update(float dt)
 	float camSpeed = 2;
 	Vector2D p = player->position;
 
-	if (p.getX() >= 110 && p.getX() <= 3270)
+	if (p.getX() >= 110 && p.getX() <= 3270 || SDL_SCANCODE_F5)
 	{ 
 		if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			Engine::GetInstance().render.get()->camera.x -= ceil(camSpeed * dt);
@@ -119,7 +119,38 @@ bool Scene::PostUpdate()
 	if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
+	//hacer en funcion Load() aparte y llamarla desde aqui
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) Load();
+	
+	//hacer en funcion Save() aparte y llamarla desde aqui
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) Save();
+
 	return ret;
+}
+
+void Scene::Load()
+{
+	pugi::xml_parse_result result = configFile.load_file("config.xml");
+	if (result == NULL) {
+		LOG("ERROR");
+		return;
+	}
+	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(),(float)configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_int() });
+}
+void Scene::Save()
+{
+	pugi::xml_document saveFile;
+	pugi::xml_parse_result result = saveFile.load_file("config.xml");
+	if (result == NULL) {
+		LOG("ERROR");
+		return;
+	}
+
+	Vector2D playerPos = player->GetPosition();
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("x").set_value(playerPos.getX());
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("y").set_value(playerPos.getY());
+
+	saveFile.save_file("config.xml");//save modified file 
 }
 
 // Called before quitting

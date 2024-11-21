@@ -298,6 +298,7 @@ bool Engine::LoadConfig()
     // If the result is ok get the main node of the XML
     // else, log the error
     // check https://pugixml.org/docs/quickstart.html#loading
+ 
 
     pugi::xml_parse_result result = configFile.load_file("config.xml");
     if (result)
@@ -308,7 +309,7 @@ bool Engine::LoadConfig()
     {
         LOG("Error loading config.xml: %s", result.description());
     }
-
+    
     return ret;
 }
 

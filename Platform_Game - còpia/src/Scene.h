@@ -34,6 +34,9 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	void Save();
+	void Load();
+
 	Vector2D GetPlayerPosition();
 
 public:
@@ -53,4 +56,6 @@ private:
 	//L03: TODO 3b: Declare a Player attribute
 	Player* player;
 	std::vector<Enemy*> enemyList;
+	pugi::xml_document configFile;
+
 };
