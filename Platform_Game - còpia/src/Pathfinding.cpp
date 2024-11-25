@@ -182,15 +182,15 @@ void Pathfinding::PropagateBFS() {
         if (IsWalkable(frontierTile.getX() + 1, frontierTile.getY())) {
             neighbors.push_back(Vector2D(frontierTile.getX() + 1, frontierTile.getY()));
         }
-        if (IsWalkable(frontierTile.getX(), frontierTile.getY() + 1)) {
-            neighbors.push_back(Vector2D(frontierTile.getX(), frontierTile.getY() + 1));
-        }
+        //if (IsWalkable(frontierTile.getX(), frontierTile.getY() + 1)) {
+        //    neighbors.push_back(Vector2D(frontierTile.getX(), frontierTile.getY() + 1));
+        //}
         if (IsWalkable(frontierTile.getX() - 1, frontierTile.getY())) {
             neighbors.push_back(Vector2D(frontierTile.getX() - 1, frontierTile.getY()));
         }
-        if (IsWalkable(frontierTile.getX(), frontierTile.getY() - 1)) {
-            neighbors.push_back(Vector2D(frontierTile.getX(), frontierTile.getY() - 1));
-        }
+        //if (IsWalkable(frontierTile.getX(), frontierTile.getY() - 1)) {
+        //    neighbors.push_back(Vector2D(frontierTile.getX(), frontierTile.getY() - 1));
+        //}
 
         // L11: TODO 2: For each neighbor, if not visited, add it to the frontier queue and visited list
         for(const auto& neighbor : neighbors) {

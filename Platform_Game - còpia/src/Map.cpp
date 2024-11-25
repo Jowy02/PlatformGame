@@ -61,6 +61,8 @@ bool Map::Update(float dt)
         }
     }
 
+
+
     return ret;
 }
 
@@ -97,6 +99,12 @@ bool Map::CleanUp()
     }
     mapData.layers.clear();
 
+    for (PhysBody* body : Engine::GetInstance().physics->colider)
+    {
+        Engine::GetInstance().physics->DeletePhysBody(body);
+    }
+    Engine::GetInstance().physics->colider.clear();
+
     return true;
 }
 
@@ -114,13 +122,12 @@ bool Map::Load(std::string path, std::string fileName)
     pugi::xml_parse_result result = mapFileXML.load_file(mapPathName.c_str());
 
 
-    if(result == NULL)
-	{
-		LOG("Could not load map xml file %s. pugi error: %s", mapPathName.c_str(), result.description());
-		ret = false;
+    if (result == NULL)
+    {
+        LOG("Could not load map xml file %s. pugi error: %s", mapPathName.c_str(), result.description());
+        ret = false;
     }
-    else {
-
+    else{
         // L06: TODO 3: Implement LoadMap to load the map properties
         // retrieve the paremeters of the <map> node and store the into the mapData struct
         mapData.width = mapFileXML.child("map").attribute("width").as_int();
@@ -129,12 +136,12 @@ bool Map::Load(std::string path, std::string fileName)
         mapData.tileHeight = mapFileXML.child("map").attribute("tileheight").as_int();
 
         // L06: TODO 4: Implement the LoadTileSet function to load the tileset properties
-       
+
         //Iterate the Tileset
-        for(pugi::xml_node tilesetNode = mapFileXML.child("map").child("tileset"); tilesetNode!=NULL; tilesetNode = tilesetNode.next_sibling("tileset"))
-		{
+        for (pugi::xml_node tilesetNode = mapFileXML.child("map").child("tileset"); tilesetNode != NULL; tilesetNode = tilesetNode.next_sibling("tileset"))
+        {
             //Load Tileset attributes
-			TileSet* tileSet = new TileSet();
+            TileSet* tileSet = new TileSet();
             tileSet->firstGid = tilesetNode.attribute("firstgid").as_int();
             tileSet->name = tilesetNode.attribute("name").as_string();
             tileSet->tileWidth = tilesetNode.attribute("tilewidth").as_int();
@@ -144,12 +151,12 @@ bool Map::Load(std::string path, std::string fileName)
             tileSet->tileCount = tilesetNode.attribute("tilecount").as_int();
             tileSet->columns = tilesetNode.attribute("columns").as_int();
 
-			//Load the tileset image
-			std::string imgName = tilesetNode.child("image").attribute("source").as_string();
-            tileSet->texture = Engine::GetInstance().textures->Load((mapPath+imgName).c_str());
+            //Load the tileset image
+            std::string imgName = tilesetNode.child("image").attribute("source").as_string();
+            tileSet->texture = Engine::GetInstance().textures->Load((mapPath + imgName).c_str());
 
-			mapData.tilesets.push_back(tileSet);
-		}
+            mapData.tilesets.push_back(tileSet);
+        }
 
         // L07: TODO 3: Iterate all layers in the TMX and load each of them
         for (pugi::xml_node layerNode = mapFileXML.child("map").child("layer"); layerNode != NULL; layerNode = layerNode.next_sibling("layer")) {
@@ -203,6 +210,7 @@ bool Map::Load(std::string path, std::string fileName)
                                     STATIC
                                 );
                                 collider->ctype = ColliderType::PLATFORM;
+                                Engine::GetInstance().physics->colider.push_back(collider);
                             }
                         }
                     }

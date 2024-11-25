@@ -320,6 +320,11 @@ bool Physics::PostUpdate()
 		}
 	}
 
+	// Process bodies to delete after the world step
+	for (PhysBody* physBody : bodiesToDelete) {
+		world->DestroyBody(physBody->body);
+	}
+	bodiesToDelete.clear();
 
 	return ret;
 }
@@ -380,6 +385,9 @@ void Physics::EndContact(b2Contact* contact)
 	}
 }
 
+void Physics::DeletePhysBody(PhysBody* physBody) {
+	bodiesToDelete.push_back(physBody);
+}
 //--------------- PhysBody
 
 void PhysBody::GetPosition(int& x, int& y) const

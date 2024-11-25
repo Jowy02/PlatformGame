@@ -45,7 +45,7 @@ public:
 		return tilePosDebug;
 
 	}
-
+	int mapLevel = 0;
 private:
 	SDL_Texture* img;
 

@@ -132,6 +132,7 @@ bool Engine::Update() {
     {
         if (maxFrameDuration == 32)
         {
+            
             maxFrameDuration = configFile.child("config").child("engine").child("maxFrameDuration").attribute("value").as_int();
         }
         else maxFrameDuration = 32;

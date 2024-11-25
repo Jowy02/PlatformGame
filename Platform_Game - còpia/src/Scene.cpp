@@ -61,6 +61,22 @@ bool Scene::Start()
 // Called each loop iteration
 bool Scene::PreUpdate()
 {
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
+	{
+		mapLevel = 0;
+		Engine::GetInstance().map->CleanUp();
+		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+	}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
+	{
+		mapLevel = 1;
+		Engine::GetInstance().map->CleanUp();
+		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
+	}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
+
+		player->SetPosition({155, 199});
+	}
 	return true;
 }
 
@@ -71,7 +87,7 @@ bool Scene::Update(float dt)
 	float camSpeed = 2;
 	Vector2D p = player->position;
 
-	if (p.getX() >= 110 && p.getX() <= 3270 || SDL_SCANCODE_F5)
+	if (p.getX() >= 110 && p.getX() <= 3270 || Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{ 
 		if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			Engine::GetInstance().render.get()->camera.x -= ceil(camSpeed * dt);
@@ -85,6 +101,8 @@ bool Scene::Update(float dt)
 	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
 	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
 																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
+
+
 
 
 	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
@@ -123,13 +141,17 @@ bool Scene::PostUpdate()
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) Load();
 	
 	//hacer en funcion Save() aparte y llamarla desde aqui
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) Save();
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && !player->deadAnimation) Save();
+
 
 	return ret;
 }
 
 void Scene::Load()
 {
+	player->deadAnimation = false;
+	player->oneTime = false;
+
 	pugi::xml_parse_result result = configFile.load_file("config.xml");
 	if (result == NULL) {
 		LOG("ERROR");

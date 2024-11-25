@@ -96,7 +96,6 @@ struct MapData
 
     // L07: TODO 2: Add the info to the MapLayer Struct
     std::list<MapLayer*> layers;
-
 };
 
 class Map : public Module
@@ -152,6 +151,8 @@ public:
     }
 
     MapLayer* GetNavigationLayer();
+
+    int mapLevel = 0;
 
 public: 
     std::string mapFileName;
