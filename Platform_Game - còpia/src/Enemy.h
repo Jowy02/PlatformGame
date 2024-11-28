@@ -33,6 +33,7 @@ public:
 	void ResetPath();
 
 public:
+	bool found = false;
 
 private:
 
@@ -44,4 +45,13 @@ private:
 	Animation idle;
 	PhysBody* pbody;
 	Pathfinding* pathfinding;
+
+	Vector2D vec[30];
+	int cnt;
+
+	bool oneTime = false;
+
+	int move = 0;
+	int tileEnemypos = 0;
+	int p = 10;
 };

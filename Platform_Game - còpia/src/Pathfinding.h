@@ -61,5 +61,6 @@ public:
     int blockedGid = 49; //Gid of the tiles that block the path - Important adjust this value to your map
     int highCostGid = 50; //Gid of the tiles that have high cost - Important adjust this value to your map
 
+    bool found = false;
 };
 

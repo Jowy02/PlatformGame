@@ -107,7 +107,7 @@ bool Scene::Update(float dt)
 
 	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
 	Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
-	SDL_Rect rect = { 0,0,32,32 };
+	SDL_Rect rect = { 0,0,16,16 };
 	Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
 		highlightTile.getX(),
 		highlightTile.getY(),

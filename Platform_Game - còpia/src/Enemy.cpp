@@ -78,10 +78,47 @@ bool Enemy::Update(float dt)
 		pathfinding->PropagateDijkstra();
 	}
 
-	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics.  
+	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics
 	b2Transform pbodyPos = pbody->body->GetTransform();
+	if (pathfinding->found) found = true;
+
+	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
+	
+	if (found) {
+		if (!oneTime)
+		{
+			for (const auto& tile : pathfinding->pathTiles) {
+				vec[cnt] = {tile};
+				cnt++;
+			}
+			oneTime = true;
+			pathfinding->found = false;
+		}
+
+		if (vec[0].getX() != tileEnemypos)
+		{
+			move++;
+			velocity.x = -0.2 * dt;
+
+			/*position.setX(METERS_TO_PIXELS((pbodyPos.p.x) - texH / 2) - move);
+			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);*/
+			if (move == p) {
+				tileEnemypos++;
+				p += 10;
+			}
+		}
+		else{
+			found = false;
+			oneTime = false;
+			cnt = 0;
+		}
+
+	}
+
+	pbody->body->SetLinearVelocity(velocity);
 	position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 	position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+	
 
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();
