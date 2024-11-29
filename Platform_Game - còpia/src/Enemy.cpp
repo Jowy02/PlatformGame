@@ -36,7 +36,7 @@ bool Enemy::Start() {
 	currentAnimation = &idle;
 	
 	//Add a physics to an item - initialize the physics body
-	pbody = Engine::GetInstance().physics.get()->CreateCircle((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, texH / 2, bodyType::DYNAMIC);
+	pbody = Engine::GetInstance().physics.get()->CreateRectangleSensor((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, 16,16, bodyType::KINEMATIC);
 
 	//Assign collider type
 	pbody->ctype = ColliderType::ENEMY;
@@ -112,13 +112,11 @@ bool Enemy::Update(float dt)
 			oneTime = false;
 			cnt = 0;
 		}
-
 	}
 
 	pbody->body->SetLinearVelocity(velocity);
 	position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 	position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
-	
 
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();

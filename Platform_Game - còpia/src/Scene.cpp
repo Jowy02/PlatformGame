@@ -101,10 +101,11 @@ bool Scene::Update(float dt)
 	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
 	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
 																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
-
-
-
-
+	if (enemyList[0]->GetPosition().getX()-12 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() + 12 >= player->GetPosition().getX())
+	{
+		if(enemyList[0]->GetPosition().getY()-16 >= player->GetPosition().getY() && enemyList[0]->GetPosition().getY() - 25 <= player->GetPosition().getY())enemyList[0]->Disable();
+	}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)enemyList[0]->active = true;
 	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
 	Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
 	SDL_Rect rect = { 0,0,16,16 };
@@ -115,7 +116,7 @@ bool Scene::Update(float dt)
 
 	// saves the tile pos for debugging purposes
 	if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
-		tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + "," + std::to_string((int)mouseTile.getY()) + "] ";
+		tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
 		once = true;
 	}
 

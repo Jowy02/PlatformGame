@@ -89,17 +89,6 @@ bool Player::Update(float dt)
 		}
 	}
 
-	////SAVE
-	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && deadAnimation ==false ) {
-	//	savePos = GetPosition();
-	//}
-	////LOAD
-	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN) {
-	//	deadAnimation = false;
-	//	oneTime = false;
-	//	SetPosition(savePos);
-	//}
-
 	if(godmode==false){	
 		if(!deadAnimation)
 		{

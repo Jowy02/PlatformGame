@@ -227,7 +227,7 @@ void Engine::FinishUpdate()
     std::stringstream ss;
     if(!preuba)
     { 
-        ss << scene.get()->GetTilePosDebug()
+        ss << scene.get()->GetPlayerPosition()
         << gameTitle << ": Av.FPS: " << std::fixed << std::setprecision(2) << averageFps
         << " Last sec frames: " << framesPerSecond
         << " Last dt: " << std::fixed << std::setprecision(3) << dt
