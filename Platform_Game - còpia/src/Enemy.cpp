@@ -80,7 +80,9 @@ bool Enemy::Update(float dt)
 
 	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics
 	b2Transform pbodyPos = pbody->body->GetTransform();
-	if (pathfinding->found) found = true;
+	if (pathfinding->found && !oneTime){
+		found = true;
+	}
 
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	
@@ -93,21 +95,30 @@ bool Enemy::Update(float dt)
 			}
 			oneTime = true;
 			pathfinding->found = false;
+			tileEnemypos = vec[cnt-1].getX();
+			if (vec[cnt - 1].getX() >= vec[0].getX())dir = 0;
+			else dir = 1;
+			cnt -= 2;
+			
 		}
-
-		if (vec[0].getX() != tileEnemypos)
+		if (tileEnemypos != vec[cnt].getX())
 		{
 			move++;
-			velocity.x = -0.2 * dt;
+			if (dir == 0)velocity.x = -0.2 * dt;
+			else velocity.x = 0.2 * dt;
 
-			/*position.setX(METERS_TO_PIXELS((pbodyPos.p.x) - texH / 2) - move);
-			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);*/
 			if (move == p) {
-				tileEnemypos++;
-				p += 10;
+				if (dir == 0)tileEnemypos--;
+				else tileEnemypos++;
+				p += 3;
 			}
 		}
-		else{
+		else cnt--;
+
+		if (cnt == 0) {
+			p = 3;
+			tileEnemypos = 0;
+			move = 0;
 			found = false;
 			oneTime = false;
 			cnt = 0;
@@ -129,6 +140,11 @@ bool Enemy::Update(float dt)
 
 bool Enemy::CleanUp()
 {
+	//tileEnemypos = 0;
+	//move = 0;
+	//found = false;
+	//oneTime = false;
+	//cnt = 0;
 	return true;
 }
 

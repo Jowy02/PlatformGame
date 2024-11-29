@@ -101,9 +101,29 @@ bool Scene::Update(float dt)
 	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
 	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
 																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
-	if (enemyList[0]->GetPosition().getX()-12 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() + 12 >= player->GetPosition().getX())
-	{
-		if(enemyList[0]->GetPosition().getY()-16 >= player->GetPosition().getY() && enemyList[0]->GetPosition().getY() - 25 <= player->GetPosition().getY())enemyList[0]->Disable();
+	if (enemyList[0]->active)
+	{ 
+		if (enemyList[0]->GetPosition().getX()-15 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() + 15 >= player->GetPosition().getX())
+		{
+			if (enemyList[0]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[0]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
+				enemyList[0]->Disable();
+				player->kill = true;
+			}
+		}
+
+		if (enemyList[0]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() >= player->GetPosition().getX())
+		{
+
+			if (enemyList[0]->GetPosition().getY() == player->GetPosition().getY()) player->hitL = true;
+		}
+		else if (enemyList[0]->GetPosition().getX() + 15 >= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() <= player->GetPosition().getX())
+		{
+
+			if (enemyList[0]->GetPosition().getY() == player->GetPosition().getY()){
+				player->hitR = true;
+			}
+
+		}
 	}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)enemyList[0]->active = true;
 	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'

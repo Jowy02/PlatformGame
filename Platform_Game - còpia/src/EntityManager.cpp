@@ -33,7 +33,6 @@ bool EntityManager::Awake()
 
 }
 
-
 bool EntityManager::Start() {
 
 	bool ret = true; 

@@ -90,7 +90,7 @@ bool Player::Update(float dt)
 	}
 
 	if(godmode==false){	
-		if(!deadAnimation)
+		if(!deadAnimation && !hitL && !hitR)
 		{
 			// Move left
 			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_H) == KEY_DOWN) LOG("PLAYER POS : %d", position.getX());
@@ -114,15 +114,16 @@ bool Player::Update(float dt)
 			}
 
 			//Jump
-			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && isJumping == false) 
+			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && isJumping == false || kill)
 			{
 				// Apply an initial upward force
 				pbody->body->ApplyLinearImpulseToCenter(b2Vec2(0, -jumpForce), true);
 				isJumping = true;
+				kill = false;
 			}
 
 			// If the player is jumpling, we don't want to apply gravity, we use the current velocity prduced by the jump
-			if(isJumping == true)
+			if(isJumping)
 			{
 				velocity.y = pbody->body->GetLinearVelocity().y;
 
@@ -140,7 +141,7 @@ bool Player::Update(float dt)
 			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
 		}
-		else
+		else if (deadAnimation)
 		{
 			currentAnimation = &dead;
 
@@ -155,8 +156,50 @@ bool Player::Update(float dt)
 			b2Transform pbodyPos = pbody->body->GetTransform();
 			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+
 		}
+		else if (hitL)
+		{
+			if (cnt <= 10)
+			{
+				currentAnimation = &dead;
+
+				velocity.x = -0.2 * dt;
+				pbody->body->SetLinearVelocity(velocity);
+
+				b2Transform pbodyPos = pbody->body->GetTransform();
+				position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
+				position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+				cnt++;
+			}
+			else {
+				hitL = false;
+				cnt = 0;
+			}
+
+		}
+		else if (hitR)
+		{
+			if (cnt <= 10)
+			{
+				currentAnimation = &dead;
+
+				velocity.x = 0.2 * dt;
+				pbody->body->SetLinearVelocity(velocity);
+
+				b2Transform pbodyPos = pbody->body->GetTransform();
+				position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
+				position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+				cnt++;
+			}
+			else {
+				hitR = false;
+				cnt = 0;
+			}
+		}
+
 		if ((int)position.getY() >= 270) deadAnimation = true;
+
 	}
 
 	else
@@ -173,13 +216,14 @@ bool Player::Update(float dt)
 		if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 			position.setX(position.getX() + speed);
 	}
-
 	
+
 
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();
 	return true;
 }
+
 
 bool Player::CleanUp()
 {
@@ -196,9 +240,13 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		LOG("Collision PLATFORM");
 		//reset the jump flag when touching the ground
 		isJumping = false;
+		kill = false;
 		break;
 	case ColliderType::ITEM:
 		LOG("Collision ITEM");
+		break;
+	case ColliderType::ENEMY:
+		LOG("Collision ENEMY");
 		break;
 	case ColliderType::UNKNOWN:
 		LOG("Collision UNKNOWN");

@@ -53,5 +53,7 @@ private:
 
 	int move = 0;
 	int tileEnemypos = 0;
-	int p = 10;
+	int p = 3;
+
+	int dir = 0; //hacer defines coon izquierda = 0 y derecha = 1
 };

@@ -56,6 +56,13 @@ public:
 	bool oneTime = false;
 	bool deadAnimation = false;
 
+	bool hitR = false;
+	bool hitL = false;
+
+	bool kill = false;
+
+	int cnt = 0; 
+
 	pugi::xml_node parameters;
 	Animation* currentAnimation = nullptr;
 	Animation idle;
