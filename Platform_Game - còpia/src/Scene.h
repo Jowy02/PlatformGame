@@ -34,6 +34,9 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Enemy hitbox
+	void EnemyHitbox();
+
 	void Save();
 	void Load();
 
@@ -46,6 +49,9 @@ public:
 
 	}
 	int mapLevel = 0;
+
+	std::vector<Enemy*> enemyList;
+
 private:
 	SDL_Texture* img;
 
@@ -55,7 +61,6 @@ private:
 
 	//L03: TODO 3b: Declare a Player attribute
 	Player* player;
-	std::vector<Enemy*> enemyList;
 	pugi::xml_document configFile;
 
 };

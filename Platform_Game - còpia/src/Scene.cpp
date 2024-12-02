@@ -101,53 +101,57 @@ bool Scene::Update(float dt)
 	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
 	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
 																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
-	if (enemyList[0]->active)
-	{ 
-		if (enemyList[0]->GetPosition().getX()-15 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() + 15 >= player->GetPosition().getX())
-		{
-			if (enemyList[0]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[0]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
-				enemyList[0]->Disable();
-				player->kill = true;
-			}
-		}
+	EnemyHitbox();
 
-		if (enemyList[0]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() >= player->GetPosition().getX())
-		{
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
 
-			if (enemyList[0]->GetPosition().getY() == player->GetPosition().getY()) player->hitL = true;
-		}
-		else if (enemyList[0]->GetPosition().getX() + 15 >= player->GetPosition().getX() && enemyList[0]->GetPosition().getX() <= player->GetPosition().getX())
-		{
+	//Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
+	//Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
+	//SDL_Rect rect = { 0,0,16,16 };
+	//Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
+	//	highlightTile.getX(),
+	//	highlightTile.getY(),
+	//	&rect);
 
-			if (enemyList[0]->GetPosition().getY() == player->GetPosition().getY()){
-				player->hitR = true;
-			}
+	//// saves the tile pos for debugging purposes
+	//if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
+	//	tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
+	//	once = true;
+	//}
 
-		}
-	}
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)enemyList[0]->active = true;
-	//Render a texture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
-	Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
-	SDL_Rect rect = { 0,0,16,16 };
-	Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
-		highlightTile.getX(),
-		highlightTile.getY(),
-		&rect);
-
-	// saves the tile pos for debugging purposes
-	if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
-		tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
-		once = true;
-	}
-
-	//If mouse button is pressed modify enemy position
-	if (Engine::GetInstance().input.get()->GetMouseButtonDown(1) == KEY_DOWN) {
-		enemyList[0]->SetPosition(Vector2D(highlightTile.getX(), highlightTile.getY()));
-		enemyList[0]->ResetPath();
-	}
-
+	////If mouse button is pressed modify enemy position
+	//if (Engine::GetInstance().input.get()->GetMouseButtonDown(1) == KEY_DOWN) {
+	//	enemyList[0]->SetPosition(Vector2D(highlightTile.getX(), highlightTile.getY()));
+	//	enemyList[0]->ResetPath();
+	//}
 
 	return true;
+}
+void Scene::EnemyHitbox()
+{
+	for (int i = 0; i < enemyList.size(); i++)
+	{
+		if (enemyList[i]->active)
+		{
+			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX())
+			{
+				if (enemyList[i]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
+					enemyList[i]->Disable();
+					player->kill = true;
+				}
+			}
+
+			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() >= player->GetPosition().getX())
+			{
+				if (enemyList[i]->GetPosition().getY() == player->GetPosition().getY()) player->hitL = true;
+			}
+			else if (enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() <= player->GetPosition().getX())
+			{
+				if (enemyList[i]->GetPosition().getY() == player->GetPosition().getY()) player->hitR = true;
+			}
+		}
+	}
 }
 
 // Called each loop iteration
@@ -164,12 +168,12 @@ bool Scene::PostUpdate()
 	//hacer en funcion Save() aparte y llamarla desde aqui
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && !player->deadAnimation) Save();
 
-
 	return ret;
 }
 
 void Scene::Load()
 {
+	int i = 0;
 	player->deadAnimation = false;
 	player->oneTime = false;
 
@@ -178,15 +182,32 @@ void Scene::Load()
 		LOG("ERROR");
 		return;
 	}
+
+	for (pugi::xml_node enemyNode = configFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
+	{
+		if (enemyNode.attribute("dead").as_bool()) enemyList[i]->Enable();
+		enemyList[i]->SetPosition({enemyNode.attribute("x").as_float(), enemyNode.attribute("y").as_float()});
+		i++;
+	}
+
 	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(),(float)configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_int() });
 }
 void Scene::Save()
 {
+	int i = 0;
 	pugi::xml_document saveFile;
 	pugi::xml_parse_result result = saveFile.load_file("config.xml");
 	if (result == NULL) {
 		LOG("ERROR");
 		return;
+	}
+
+	for (pugi::xml_node enemyNode = saveFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
+	{
+		enemyNode.attribute("dead").set_value(enemyList[i]->active);
+		//enemyNode.attribute("x").set_value(enemyList[i]->GetPosition().getX());
+		//enemyNode.attribute("y").set_value(enemyList[i]->GetPosition().getY());
+		i++;
 	}
 
 	Vector2D playerPos = player->GetPosition();

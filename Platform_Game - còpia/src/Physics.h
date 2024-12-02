@@ -84,10 +84,11 @@ public:
 	void DeletePhysBody(PhysBody* physBody);
 	std::list<PhysBody*> colider;
 
+	bool debug;
+
 private:
 
 	// Debug mode
-	bool debug;
 
 	// Box2D World
 	b2World* world;

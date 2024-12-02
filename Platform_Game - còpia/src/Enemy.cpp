@@ -133,8 +133,11 @@ bool Enemy::Update(float dt)
 	currentAnimation->Update();
 
 	// Draw pathfinding 
-	pathfinding->DrawPath();
+	//pathfinding->DrawPath();
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+		debug = !debug;
 
+	if(debug) pathfinding->DrawPath();;
 	return true;
 }
 
