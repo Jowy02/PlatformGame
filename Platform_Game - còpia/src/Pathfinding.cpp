@@ -53,7 +53,7 @@ void Pathfinding::ResetPath(Vector2D pos) {
 
     //reset the costSoFar matrix
     costSoFar = std::vector<std::vector<int>>(map->GetWidth(), std::vector<int>(map->GetHeight(), 0));
-    
+    expansionCnt = 0;
 }
 
 void Pathfinding::DrawPath() {
@@ -173,13 +173,13 @@ void Pathfinding::PropagateBFS() {
     }
 
     // L11: TODO 1: If frontier queue contains elements pop the first element and find the neighbors
-    if (frontier.size() > 0 && !foundDestination) {
+    if (frontier.size() > 0 && !foundDestination && expansionCnt <= maxExpansion) {
 
         //Get the value of the firt element in the queue
         Vector2D frontierTile = frontier.front();
         //remove the first element from the queue
         frontier.pop();
-        
+        expansionCnt++;
         std::list<Vector2D> neighbors;
         if (IsWalkable(frontierTile.getX() + 1, frontierTile.getY())) {
             neighbors.push_back(Vector2D(frontierTile.getX() + 1, frontierTile.getY()));

@@ -106,7 +106,8 @@ bool Scene::Update(float dt)
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
 
-	//Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
+
+	////Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
 	//Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
 	//SDL_Rect rect = { 0,0,16,16 };
 	//Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
@@ -134,6 +135,16 @@ void Scene::EnemyHitbox()
 	{
 		if (enemyList[i]->active)
 		{
+			if (enemyList[i]->initialPos.getX()-50 <= player->GetPosition().getX() && enemyList[i]->initialPos.getX() + 50 >= player->GetPosition().getX())
+			{
+				enemyList[i]->playerNear = true;
+			}
+			else
+			{
+				enemyList[i]->playerNear = false;
+				enemyList[i]->CleanUp();
+			}
+
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX())
 			{
 				if (enemyList[i]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
@@ -205,14 +216,13 @@ void Scene::Save()
 	for (pugi::xml_node enemyNode = saveFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
 	{
 		enemyNode.attribute("dead").set_value(enemyList[i]->active);
-		//enemyNode.attribute("x").set_value(enemyList[i]->GetPosition().getX());
-		//enemyNode.attribute("y").set_value(enemyList[i]->GetPosition().getY());
+		enemyNode.attribute("x").set_value(enemyList[i]->GetPosition().getX()-8);
 		i++;
 	}
 
 	Vector2D playerPos = player->GetPosition();
-	saveFile.child("config").child("scene").child("entities").child("player").attribute("x").set_value(playerPos.getX());
-	saveFile.child("config").child("scene").child("entities").child("player").attribute("y").set_value(playerPos.getY());
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("x").set_value(playerPos.getX() - 8);
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("y").set_value(playerPos.getY() - 8);
 
 	saveFile.save_file("config.xml");//save modified file 
 }

@@ -30,11 +30,11 @@ bool Enemy::Start() {
 	position.setY(parameters.attribute("y").as_int());
 	texW = parameters.attribute("w").as_int();
 	texH = parameters.attribute("h").as_int();
-
+	flyingEnemy = parameters.attribute("flying").as_bool();
 	//Load animations
 	idle.LoadAnimations(parameters.child("animations").child("idle"));
 	currentAnimation = &idle;
-	
+	initialPos = position;
 	//Add a physics to an item - initialize the physics body
 	pbody = Engine::GetInstance().physics.get()->CreateRectangleSensor((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, 16,16, bodyType::KINEMATIC);
 
@@ -53,29 +53,27 @@ bool Enemy::Start() {
 
 bool Enemy::Update(float dt)
 {
-	// Pathfinding testing inputs
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
+
+	if (playerNear && !flyingEnemy)
+	{
+		pathfinding->PropagateBFS();
+	}
+	if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found)
+	{
 		Vector2D pos = GetPosition();
-		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(),pos.getY());
+		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
 		pathfinding->ResetPath(tilePos);
 	}
-
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_J) == KEY_DOWN) {
-		pathfinding->PropagateBFS();
-	}
-
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_J) == KEY_REPEAT &&
-		Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT) {
-		pathfinding->PropagateBFS();
-	}
-
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_K) == KEY_DOWN) {
+	
+	if (playerNear && flyingEnemy)
+	{
 		pathfinding->PropagateDijkstra();
 	}
-
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_K) == KEY_REPEAT &&
-		Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT) {
-		pathfinding->PropagateDijkstra();
+	if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found)
+	{
+		Vector2D pos = GetPosition();
+		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
+		pathfinding->ResetPath(tilePos);
 	}
 
 	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics
@@ -89,6 +87,9 @@ bool Enemy::Update(float dt)
 	if (found) {
 		if (!oneTime)
 		{
+			for (int i = 0; i < sizeof(vec); i++) {
+				vec[cnt] = { 0,0 };
+			}
 			for (const auto& tile : pathfinding->pathTiles) {
 				vec[cnt] = {tile};
 				cnt++;
@@ -122,6 +123,7 @@ bool Enemy::Update(float dt)
 			found = false;
 			oneTime = false;
 			cnt = 0;
+
 		}
 	}
 
@@ -132,8 +134,6 @@ bool Enemy::Update(float dt)
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();
 
-	// Draw pathfinding 
-	//pathfinding->DrawPath();
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 		debug = !debug;
 
@@ -143,11 +143,11 @@ bool Enemy::Update(float dt)
 
 bool Enemy::CleanUp()
 {
-	//tileEnemypos = 0;
-	//move = 0;
-	//found = false;
-	//oneTime = false;
-	//cnt = 0;
+	tileEnemypos = 0;
+	move = 0;
+	found = false;
+	oneTime = false;
+	cnt = 0;
 	return true;
 }
 
