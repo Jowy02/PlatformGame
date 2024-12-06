@@ -22,7 +22,7 @@ public:
 	~Pathfinding();
 
     // L11: BFS Pathfinding methods
-    void ResetPath(Vector2D pos);
+    void ResetPath(Vector2D pos, bool flying);
     void DrawPath();
     bool IsWalkable(int x, int y);
     void PropagateBFS();
@@ -63,6 +63,8 @@ public:
 
     int maxExpansion = 10;
     int expansionCnt = 0;
+    int FexpansionCnt = 0;
+
 
     bool found = false;
 };

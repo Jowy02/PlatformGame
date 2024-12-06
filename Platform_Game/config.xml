@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="147" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
+			<player x="435" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />
@@ -52,33 +52,22 @@
 				</animations>
 			</player>
 			<enemies>
-				<enemy name="badguy" x="308" y="192" w="16" h="16" texture="Assets/Textures/enemy/Idle.png" gravity="true" dead="true" flying="false">
+				<enemy name="Goomba" x="387" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false">
 					<animations>
-						<idle loop="true" speed="0.5">
+						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />
-							<frame x="32" y="0" w="16" h="16" />
-							<frame x="64" y="0" w="16" h="16" />
-							<frame x="96" y="0" w="16" h="16" />
-							<frame x="128" y="0" w="16" h="16" />
-							<frame x="160" y="0" w="16" h="16" />
-							<frame x="192" y="0" w="16" h="16" />
-							<frame x="224" y="0" w="16" h="16" />
-							<frame x="256" y="0" w="16" h="16" />
+							<frame x="16" y="0" w="16" h="16" />
 						</idle>
+						<dead loop="true" speed="1">
+							<frame x="32" y="0" w="16" h="16" />
+						</dead>
 					</animations>
 				</enemy>
-				<enemy name="badguy" x="633" y="292" w="16" h="16" texture="Assets/Textures/enemy/Idle.png" gravity="true" dead="true" flying="true">
+				<enemy name="Boo" x="568" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true">
 					<animations>
-						<idle loop="true" speed="0.5">
+						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />
-							<frame x="32" y="0" w="16" h="16" />
-							<frame x="64" y="0" w="16" h="16" />
-							<frame x="96" y="0" w="16" h="16" />
-							<frame x="128" y="0" w="16" h="16" />
-							<frame x="160" y="0" w="16" h="16" />
-							<frame x="192" y="0" w="16" h="16" />
-							<frame x="224" y="0" w="16" h="16" />
-							<frame x="256" y="0" w="16" h="16" />
+							<frame x="16" y="0" w="16" h="16" />
 						</idle>
 					</animations>
 				</enemy>

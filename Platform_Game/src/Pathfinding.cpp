@@ -23,7 +23,7 @@ Pathfinding::~Pathfinding() {
 }
 
 // L11: BFS Pathfinding methods
-void Pathfinding::ResetPath(Vector2D pos) {
+void Pathfinding::ResetPath(Vector2D pos, bool flying) {
 
     // Clear the frontier queue
     while (!frontier.empty()) {
@@ -53,7 +53,8 @@ void Pathfinding::ResetPath(Vector2D pos) {
 
     //reset the costSoFar matrix
     costSoFar = std::vector<std::vector<int>>(map->GetWidth(), std::vector<int>(map->GetHeight(), 0));
-    expansionCnt = 0;
+    if (!flying)expansionCnt = 0;
+    else FexpansionCnt = 0;
 }
 
 void Pathfinding::DrawPath() {
@@ -226,12 +227,13 @@ void Pathfinding::PropagateDijkstra() {
     }
 
     //If frontier queue contains elements pop the first element and find the neighbors
-    if (frontier.size() > 0 && !foundDestination) {
+    if (frontier.size() > 0 && !foundDestination && FexpansionCnt <= 100) {
 
         //Get the value of the firt element in the queue
         Vector2D frontierTile = frontierDijkstra.top().second;
         //remove the first element from the queue
         frontierDijkstra.pop();
+        FexpansionCnt++;
 
         std::list<Vector2D> neighbors;
         if (IsWalkable(frontierTile.getX() + 1, frontierTile.getY())) {

@@ -55,10 +55,13 @@ private:
 	bool oneTime = false;
 	bool debug = true;
 	int cnt;
+	bool p = false;
+	bool rest = false;
 
-	int move = 0;
-	int tileEnemypos = 0;
-	int p = 3;
+	int changedir = 0;
+	int r = 0;
+	int ry = 0;
 	int dir = 0; //hacer defines coon izquierda = 0 y derecha = 1
+	int dirUD = 0;
 
 };

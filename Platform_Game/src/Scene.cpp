@@ -107,25 +107,25 @@ bool Scene::Update(float dt)
 		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
 
 
-	////Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
-	//Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
-	//SDL_Rect rect = { 0,0,16,16 };
-	//Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
-	//	highlightTile.getX(),
-	//	highlightTile.getY(),
-	//	&rect);
+	//Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
+	Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
+	SDL_Rect rect = { 0,0,16,16 };
+	Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
+		highlightTile.getX(),
+		highlightTile.getY(),
+		&rect);
 
-	//// saves the tile pos for debugging purposes
-	//if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
-	//	tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
-	//	once = true;
-	//}
+	// saves the tile pos for debugging purposes
+	if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
+		tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
+		once = true;
+	}
 
-	////If mouse button is pressed modify enemy position
-	//if (Engine::GetInstance().input.get()->GetMouseButtonDown(1) == KEY_DOWN) {
-	//	enemyList[0]->SetPosition(Vector2D(highlightTile.getX(), highlightTile.getY()));
-	//	enemyList[0]->ResetPath();
-	//}
+	//If mouse button is pressed modify enemy position
+	if (Engine::GetInstance().input.get()->GetMouseButtonDown(1) == KEY_DOWN) {
+		enemyList[0]->SetPosition(Vector2D(highlightTile.getX(), highlightTile.getY()));
+		enemyList[0]->ResetPath();
+	}
 
 	return true;
 }
@@ -135,7 +135,7 @@ void Scene::EnemyHitbox()
 	{
 		if (enemyList[i]->active)
 		{
-			if (enemyList[i]->initialPos.getX()-50 <= player->GetPosition().getX() && enemyList[i]->initialPos.getX() + 50 >= player->GetPosition().getX())
+			if (enemyList[i]->initialPos.getX()-100 <= player->GetPosition().getX() && enemyList[i]->initialPos.getX() + 100 >= player->GetPosition().getX())
 			{
 				enemyList[i]->playerNear = true;
 			}
@@ -148,6 +148,7 @@ void Scene::EnemyHitbox()
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX())
 			{
 				if (enemyList[i]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
+					enemyList[i]->found = false;
 					enemyList[i]->Disable();
 					player->kill = true;
 				}

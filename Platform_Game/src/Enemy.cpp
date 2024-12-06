@@ -53,27 +53,29 @@ bool Enemy::Start() {
 
 bool Enemy::Update(float dt)
 {
-
+	
 	if (playerNear && !flyingEnemy)
 	{
 		pathfinding->PropagateBFS();
 	}
-	if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found)
-	{
-		Vector2D pos = GetPosition();
-		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
-		pathfinding->ResetPath(tilePos);
-	}
-	
-	if (playerNear && flyingEnemy)
+	else if (playerNear && flyingEnemy )
 	{
 		pathfinding->PropagateDijkstra();
 	}
-	if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found)
+
+	if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found || rest)
 	{
 		Vector2D pos = GetPosition();
 		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
-		pathfinding->ResetPath(tilePos);
+		pathfinding->ResetPath(tilePos, flyingEnemy);
+		rest = false;
+	}
+
+	if (pathfinding->FexpansionCnt >= 100 && !found || rest)
+	{
+    	Vector2D pos = GetPosition();
+		Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
+		pathfinding->ResetPath(tilePos, flyingEnemy);
 	}
 
 	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics
@@ -83,7 +85,9 @@ bool Enemy::Update(float dt)
 	}
 
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
-	
+
+	Vector2D enemyPos = GetPosition();
+
 	if (found) {
 		if (!oneTime)
 		{
@@ -91,45 +95,73 @@ bool Enemy::Update(float dt)
 				vec[cnt] = { 0,0 };
 			}
 			for (const auto& tile : pathfinding->pathTiles) {
-				vec[cnt] = {tile};
+				vec[cnt] = {tile*16};
 				cnt++;
 			}
 			oneTime = true;
 			pathfinding->found = false;
-			tileEnemypos = vec[cnt-1].getX();
+			
 			if (vec[cnt - 1].getX() >= vec[0].getX())dir = 0;
 			else dir = 1;
-			cnt -= 2;
-			
-		}
-		if (tileEnemypos != vec[cnt].getX())
-		{
-			move++;
-			if (dir == 0)velocity.x = -0.2 * dt;
-			else velocity.x = 0.2 * dt;
 
-			if (move == p) {
-				if (dir == 0)tileEnemypos--;
-				else tileEnemypos++;
-				p += 3;
+			if (vec[cnt - 1].getY() >= vec[0].getY())dirUD = 0;
+			else dirUD = 1;
+			cnt -= 1;
+		}
+		
+		if(vec[cnt].getY() == vec[cnt-1].getY() && cnt !=0 || cnt == 0 && vec[cnt].getY() == vec[cnt+1].getY())
+		{ 
+			velocity.y = 0.0 * dt;
+			if(dir == 1)
+			{ 
+				if (enemyPos.getX() <= vec[cnt].getX())
+				{
+					velocity.x = 0.2 * dt;
+				}
+				 if (enemyPos.getX() >= vec[cnt].getX()) cnt--;
+				
+			}
+			else 
+			{
+				if (enemyPos.getX() >= vec[cnt].getX())
+				{
+					velocity.x = -0.2 * dt;
+				}
+				if (enemyPos.getX()<= vec[cnt].getX()) cnt--;
 			}
 		}
-		else cnt--;
+		else 
+		{
+			velocity.x = 0.0 * dt;
+			if (dirUD == 1)
+			{
+				if (enemyPos.getY() <= vec[cnt].getY())
+				{
+					velocity.y = 0.2 * dt;
+				}
+				if (enemyPos.getY()-8 >= vec[cnt].getY()) cnt--;
+			}
+			else
+			{
+				if (enemyPos.getY() >= vec[cnt].getY())
+				{
+					velocity.y = -0.2 * dt;
+				}
+				if (enemyPos.getY() <= vec[cnt].getY()) cnt--;
+			}
+		}
 
-		if (cnt == 0) {
-			p = 3;
-			tileEnemypos = 0;
-			move = 0;
+		if(cnt < 0) {
 			found = false;
 			oneTime = false;
 			cnt = 0;
-
+			velocity.y = 0.0;
 		}
 	}
 
 	pbody->body->SetLinearVelocity(velocity);
-	position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
-	position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+	position.setX((METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2) + r);
+	position.setY((METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2) + ry);
 
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();
@@ -143,8 +175,12 @@ bool Enemy::Update(float dt)
 
 bool Enemy::CleanUp()
 {
-	tileEnemypos = 0;
-	move = 0;
+	pbody->body->SetLinearVelocity({0.0,0.0});
+
+	Vector2D pos = GetPosition();
+	Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
+	pathfinding->ResetPath(tilePos, flyingEnemy);
+
 	found = false;
 	oneTime = false;
 	cnt = 0;
@@ -167,5 +203,5 @@ Vector2D Enemy::GetPosition() {
 void Enemy::ResetPath() {
 	Vector2D pos = GetPosition();
 	Vector2D tilePos = Engine::GetInstance().map.get()->WorldToMap(pos.getX(), pos.getY());
-	pathfinding->ResetPath(tilePos);
+	pathfinding->ResetPath(tilePos, flyingEnemy);
 }

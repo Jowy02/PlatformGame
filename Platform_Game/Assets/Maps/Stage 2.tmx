@@ -7431,9 +7431,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -7652,12 +7652,12 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -7876,14 +7876,14 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8107,7 +8107,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8331,8 +8331,8 @@
    <tile gid="7"/>
    <tile gid="7"/>
    <tile gid="7"/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8555,8 +8555,8 @@
    <tile gid="78"/>
    <tile gid="78"/>
    <tile gid="78"/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8779,9 +8779,9 @@
    <tile gid="78"/>
    <tile gid="78"/>
    <tile gid="78"/>
-   <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile gid="272"/>
    <tile/>
    <tile/>
@@ -9003,8 +9003,8 @@
    <tile gid="174"/>
    <tile gid="78"/>
    <tile gid="78"/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -9227,8 +9227,8 @@
    <tile gid="186"/>
    <tile gid="78"/>
    <tile gid="78"/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
@@ -9451,8 +9451,8 @@
    <tile gid="198"/>
    <tile gid="78"/>
    <tile gid="78"/>
-   <tile/>
-   <tile/>
+   <tile gid="14"/>
+   <tile gid="14"/>
    <tile/>
    <tile/>
    <tile/>
