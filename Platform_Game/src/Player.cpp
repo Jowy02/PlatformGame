@@ -62,7 +62,7 @@ bool Player::Start() {
 	pbody->ctype = ColliderType::PLAYER;
 
 	//initialize audio effect
-	pickCoinFxId = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/retro-video-game-coin-pickup-38299.ogg");
+	pickCoinFxId = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Music/Mario Dies.ogg");
 
 	return true;
 }
@@ -244,6 +244,8 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		break;
 	case ColliderType::ITEM:
 		LOG("Collision ITEM");
+		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		break;
 	case ColliderType::ENEMY:
 		LOG("Collision ENEMY");
@@ -265,7 +267,7 @@ void Player::OnCollisionEnd(PhysBody* physA, PhysBody* physB)
 		break;
 	case ColliderType::ITEM:
 		LOG("End Collision ITEM");
-		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+// Deletes the body of the item from the physics world
 		break;
 	case ColliderType::UNKNOWN:
 		LOG("End Collision UNKNOWN");

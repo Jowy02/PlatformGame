@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="435" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
+			<player x="103" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />
@@ -51,8 +51,17 @@
 					</dead>
 				</animations>
 			</player>
+			<items>
+				<item name="coin" x="16" y="192" w="32" h="32" texture="Assets/Textures/goldCoin.png" gravity="false">
+					<animations>
+						<idle loop="true" speed ="0.5">
+							<frame x="0" y="0" w="32" h="32"/>
+						</idle>
+					</animations>
+				</item>
+			</items>
 			<enemies>
-				<enemy name="Goomba" x="387" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false">
+				<enemy name="Goomba" x="389" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />
