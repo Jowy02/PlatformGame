@@ -58,8 +58,8 @@ public:
     // L13: A* Pathfinding variables
     std::priority_queue<std::pair<int, Vector2D>, std::vector<std::pair<int, Vector2D>>, std::greater<std::pair<int, Vector2D>> > frontierAStar;
 
-    int blockedGid = 49; //Gid of the tiles that block the path - Important adjust this value to your map
-    int highCostGid = 50; //Gid of the tiles that have high cost - Important adjust this value to your map
+    int blockedGid = 258; //Gid of the tiles that block the path - Important adjust this value to your map
+    int highCostGid = 259; //Gid of the tiles that have high cost - Important adjust this value to your map
 
     int maxExpansion = 10;
     int expansionCnt = 0;

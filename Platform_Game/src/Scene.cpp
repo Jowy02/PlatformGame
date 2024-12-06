@@ -62,6 +62,8 @@ bool Scene::Start()
 	Engine::GetInstance().map->Load(configParameters.child("map").attribute("path").as_string(), configParameters.child("map").attribute("name").as_string());
 	mouseTileTex = Engine::GetInstance().textures.get()->Load("Assets/Maps/MapMetadata.png");
 
+	check = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
+
 	return true;
 }
 
@@ -114,26 +116,6 @@ bool Scene::Update(float dt)
 		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
 
 
-	//Render a te	xture where the mouse is over to highlight the tile, use the texture 'mouseTileTex'
-	Vector2D highlightTile = Engine::GetInstance().map.get()->MapToWorld(mouseTile.getX(), mouseTile.getY());
-	SDL_Rect rect = { 0,0,16,16 };
-	Engine::GetInstance().render.get()->DrawTexture(mouseTileTex,
-		highlightTile.getX(),
-		highlightTile.getY(),
-		&rect);
-
-	// saves the tile pos for debugging purposes
-	if (mouseTile.getX() >= 0 && mouseTile.getY() >= 0 || once) {
-		tilePosDebug = "[" + std::to_string((int)mouseTile.getX()) + " ," + std::to_string((int)mouseTile.getY()) + "] ";
-		once = true;
-	}
-
-	//If mouse button is pressed modify enemy position
-	if (Engine::GetInstance().input.get()->GetMouseButtonDown(1) == KEY_DOWN) {
-		enemyList[0]->SetPosition(Vector2D(highlightTile.getX(), highlightTile.getY()));
-		enemyList[0]->ResetPath();
-	}
-
 	return true;
 }
 void Scene::EnemyHitbox()
@@ -177,15 +159,21 @@ void Scene::EnemyHitbox()
 bool Scene::PostUpdate()
 {
 	bool ret = true;
+	int Check = Engine::GetInstance().map.get()->checkpoints[actualCheck].getX();
 
-	if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		ret = false;
+	if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
 
 	//hacer en funcion Load() aparte y llamarla desde aqui
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN) Load();
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN || player->GetPosition().getY() >= 300) Load();
 	
 	//hacer en funcion Save() aparte y llamarla desde aqui
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && !player->deadAnimation) Save();
+	if (player->GetPosition().getX() >= Check && player->GetPosition().getX() <= Check + 10){
+		Engine::GetInstance().audio.get()->PlayFx(check);
+		if (actualCheck == 0)actualCheck++;
+		else actualCheck--;
+		Save();
+	}
 
 	return ret;
 }
@@ -208,12 +196,11 @@ void Scene::Load()
 		enemyList[i]->SetPosition({enemyNode.attribute("x").as_float(), enemyNode.attribute("y").as_float()});
 		i++;
 	}
-
 	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(),(float)configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_int() });
 }
 void Scene::Save()
 {
-	int i = 0;
+ 	int i = 0;
 	pugi::xml_document saveFile;
 	pugi::xml_parse_result result = saveFile.load_file("config.xml");
 	if (result == NULL) {

@@ -86,6 +86,7 @@ struct TileSet
 // L06: TODO 1: Create a struct needed to hold the information to Map node
 struct MapData
 {
+
 	int width;
 	int height;
 	int tileWidth;
@@ -158,7 +159,10 @@ public:
     std::string mapFileName;
     std::string mapPath;
 
+    Vector2D checkpoints[2];
+
 private:
+    int cnt = 0;
     bool mapLoaded;
     // L06: DONE 1: Declare a variable data of the struct MapData
     MapData mapData;

@@ -137,7 +137,6 @@ bool Engine::Update() {
         }
         else maxFrameDuration = 32;
     }
-
     if (input->GetWindowEvent(WE_QUIT) == true)
         ret = false;
 

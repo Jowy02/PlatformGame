@@ -192,7 +192,7 @@ bool Map::Load(std::string path, std::string fileName)
                 for (int i = 0; i < mapData.width; i++) {
                     for (int j = 0; j < mapData.height; j++) {
                         int gid = mapLayer->Get(i, j);
-                        if (gid != 0) {
+                        if (gid == 258) {
                             TileSet* tileSet = GetTilesetFromTileId(gid);
                             if (tileSet != nullptr) {
                                 Vector2D mapCoord = MapToWorld(i, j);
@@ -213,6 +213,15 @@ bool Map::Load(std::string path, std::string fileName)
                                 Engine::GetInstance().physics->colider.push_back(collider);
                             }
                         }
+                        else if (gid == 237) {
+                            TileSet* tileSet = GetTilesetFromTileId(gid);
+                            if (tileSet != nullptr) {
+                            checkpoints[cnt] = MapToWorld(i, j);
+                            cnt++;
+                            }
+
+                        }
+
                     }
                 }
             }

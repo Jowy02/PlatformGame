@@ -62,8 +62,13 @@ bool Player::Start() {
 	pbody->ctype = ColliderType::PLAYER;
 
 	//initialize audio effect
-	pickCoinFxId = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Music/Mario Dies.ogg");
+	pickCoinFxId = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Coin.ogg");
+	jumpSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Jump Small.ogg");
+	enemyKillSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Kick.ogg");
+	dieSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Music/Mario Dies.ogg");
+	hitSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Bump.ogg");
 
+	
 	return true;
 }
 
@@ -117,6 +122,8 @@ bool Player::Update(float dt)
 			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && isJumping == false || kill)
 			{
 				// Apply an initial upward force
+				if (!kill)Engine::GetInstance().audio.get()->PlayFx(jumpSfx);
+				else Engine::GetInstance().audio.get()->PlayFx(enemyKillSfx);
 				pbody->body->ApplyLinearImpulseToCenter(b2Vec2(0, -jumpForce), true);
 				isJumping = true;
 				kill = false;
@@ -147,6 +154,7 @@ bool Player::Update(float dt)
 
 			if(!oneTime){
 				pbody->body->ApplyLinearImpulseToCenter(b2Vec2(0, -0.7f), true);
+				Engine::GetInstance().audio.get()->PlayFx(dieSfx);
 				oneTime = true;
 			}
 
@@ -160,6 +168,7 @@ bool Player::Update(float dt)
 		}
 		else if (hitL)
 		{
+
 			if (cnt <= 10)
 			{
 				currentAnimation = &dead;
@@ -180,6 +189,7 @@ bool Player::Update(float dt)
 		}
 		else if (hitR)
 		{
+
 			if (cnt <= 10)
 			{
 				currentAnimation = &dead;

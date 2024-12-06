@@ -63,4 +63,8 @@ private:
 	Player* player;
 	pugi::xml_document configFile;
 
+	//sfx
+	int actualCheck = 0;
+	int check;
+
 };
