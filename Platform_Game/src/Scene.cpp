@@ -64,6 +64,7 @@ bool Scene::Start()
 	mouseTileTex = Engine::GetInstance().textures.get()->Load("Assets/Maps/MapMetadata.png");
 
 	check = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
+
 	Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 
 	return true;
@@ -72,18 +73,19 @@ bool Scene::Start()
 // Called each loop iteration
 bool Scene::PreUpdate()
 {
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
-	{
-		mapLevel = 0;
-		Engine::GetInstance().map->CleanUp();
-		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
-	}
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
-	{
-		mapLevel = 1;
-		Engine::GetInstance().map->CleanUp();
-		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
-	}
+	//Change level(not finished)
+	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
+	//{
+	//	mapLevel = 0;
+	//	Engine::GetInstance().map->CleanUp();
+	//	Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+	//}
+	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
+	//{
+	//	mapLevel = 1;
+	//	Engine::GetInstance().map->CleanUp();
+	//	Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
+	//}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
 		player->SetPosition({155, 199});
