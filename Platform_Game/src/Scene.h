@@ -67,4 +67,6 @@ private:
 	int actualCheck = 0;
 	int check;
 
+	int margin = 8;
+	int enemyRange = 100;
 };

@@ -124,7 +124,7 @@ void Scene::EnemyHitbox()
 	{
 		if (enemyList[i]->active)
 		{
-			if (enemyList[i]->initialPos.getX()-100 <= player->GetPosition().getX() && enemyList[i]->initialPos.getX() + 100 >= player->GetPosition().getX())
+			if (enemyList[i]->initialPos.getX()- enemyRange <= player->GetPosition().getX() && enemyList[i]->initialPos.getX() + enemyRange >= player->GetPosition().getX())
 			{
 				enemyList[i]->playerNear = true;
 			}
@@ -146,14 +146,14 @@ void Scene::EnemyHitbox()
 
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() >= player->GetPosition().getX())
 			{
-				if (enemyList[i]->GetPosition().getY()-8 <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + 8 >= player->GetPosition().getY()){
+				if (enemyList[i]->GetPosition().getY()- margin <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + margin >= player->GetPosition().getY()){
 					player->hitL = true;
 				}
 
 			}
 			else if (enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() <= player->GetPosition().getX())
 			{
-				if (enemyList[i]->GetPosition().getY() - 8 <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + 8 >= player->GetPosition().getY()){
+				if (enemyList[i]->GetPosition().getY() - margin <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + margin >= player->GetPosition().getY()){
 					player->hitR = true;
 				}
 			}

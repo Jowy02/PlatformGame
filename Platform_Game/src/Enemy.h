@@ -55,7 +55,7 @@ private:
 	Vector2D vec[30];
 	bool flyingEnemy;
 	bool oneTime = false;
-	bool debug = true;
+	bool debug = false;
 	int cnt;
 	bool p = false;
 	bool rest = false;

@@ -224,11 +224,10 @@ void Engine::FinishUpdate()
 
 
     if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_H) == KEY_DOWN) {
-        if (preuba)preuba = false;
-        else preuba = true;
+        showControls = !showControls;
     }
     std::stringstream ss;
-    if(!preuba)
+    if(!showControls)
     { 
         ss << scene.get()->GetPlayerPosition()
         << gameTitle << ": Av.FPS: " << std::fixed << std::setprecision(2) << averageFps

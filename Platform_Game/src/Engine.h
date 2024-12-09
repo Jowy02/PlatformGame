@@ -115,7 +115,7 @@ private:
 	int framesPerSecond = 0;
 	int lastSecFrameCount = 0;
 
-	bool preuba = false;
+	bool showControls = false;
 
 	float averageFps = 0.0f;
 	int secondsSinceStartup = 0;
