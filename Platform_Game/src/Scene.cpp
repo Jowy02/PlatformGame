@@ -143,8 +143,7 @@ void Scene::EnemyHitbox()
 					player->kill = true;
 				}
 			}
-			Vector2D enemyPos = enemyList[i]->GetPosition();
-			Vector2D playerPos = GetPlayerPosition();
+
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() >= player->GetPosition().getX())
 			{
 				if (enemyList[i]->GetPosition().getY()-8 <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + 8 >= player->GetPosition().getY()){
