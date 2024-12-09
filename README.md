@@ -31,6 +31,14 @@ This first approach of the project uses Mario Bros mechanics, sprites and Level 
      * **_SPACE_** for jump
 * Player parameters, Animation sets and other configuration parameters such as audio and textures can be read from external files (coin audio is implemented)
 * Game is capped at 60 stable FPS and info appears on Window Title as demanded
+### 0.9 Version (09/12/2024)
+* Enemies added, with PathFinding to search for Player and animations when moving
+* Save/Load features coded to use from Debug
+* Checkpoints implemented with visual and SFX feedback for Player
+* Map layer now allows to position different checkpoints just by the use of a tile
+* Player can jump on Enemies to "kill" them
+* Collectable coins distributed on map, with SFX feedback for Player
+* BG music implemented
 
 ## Credits
 _**Code and Research + QA**: Joel Vicente_
