@@ -172,8 +172,7 @@ bool Enemy::Update(float dt)
 	if(debug) pathfinding->DrawPath();;
 	return true;
 }
-
-bool Enemy::CleanUp()
+void Enemy::Stop()
 {
 	pbody->body->SetLinearVelocity({0.0,0.0});
 
@@ -184,6 +183,10 @@ bool Enemy::CleanUp()
 	found = false;
 	oneTime = false;
 	cnt = 0;
+}
+
+bool Enemy::CleanUp()
+{
 	return true;
 }
 

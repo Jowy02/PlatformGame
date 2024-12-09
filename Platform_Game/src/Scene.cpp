@@ -131,7 +131,7 @@ void Scene::EnemyHitbox()
 			else
 			{
 				enemyList[i]->playerNear = false;
-				enemyList[i]->CleanUp();
+				enemyList[i]->Stop();
 			}
 
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX())
@@ -139,17 +139,24 @@ void Scene::EnemyHitbox()
 				if (enemyList[i]->GetPosition().getY() - 16 >= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() - 25 <= player->GetPosition().getY()) {
 					enemyList[i]->found = false;
 					enemyList[i]->Disable();
+					enemyList[i]->Stop(); 
 					player->kill = true;
 				}
 			}
-
+			Vector2D enemyPos = enemyList[i]->GetPosition();
+			Vector2D playerPos = GetPlayerPosition();
 			if (enemyList[i]->GetPosition().getX() - 15 <= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() >= player->GetPosition().getX())
 			{
-				if (enemyList[i]->GetPosition().getY() == player->GetPosition().getY()) player->hitL = true;
+				if (enemyList[i]->GetPosition().getY()-8 <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + 8 >= player->GetPosition().getY()){
+					player->hitL = true;
+				}
+
 			}
 			else if (enemyList[i]->GetPosition().getX() + 15 >= player->GetPosition().getX() && enemyList[i]->GetPosition().getX() <= player->GetPosition().getX())
 			{
-				if (enemyList[i]->GetPosition().getY() == player->GetPosition().getY()) player->hitR = true;
+				if (enemyList[i]->GetPosition().getY() - 8 <= player->GetPosition().getY() && enemyList[i]->GetPosition().getY() + 8 >= player->GetPosition().getY()){
+					player->hitR = true;
+				}
 			}
 		}
 	}

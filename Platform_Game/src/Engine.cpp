@@ -132,10 +132,12 @@ bool Engine::Update() {
     {
         if (maxFrameDuration == 32)
         {
-            
             maxFrameDuration = configFile.child("config").child("engine").child("maxFrameDuration").attribute("value").as_int();
         }
-        else maxFrameDuration = 32;
+        else{
+            maxFrameDuration = 32;
+        }
+
     }
     if (input->GetWindowEvent(WE_QUIT) == true)
         ret = false;
@@ -185,6 +187,7 @@ void Engine::FinishUpdate()
 {
     // L03: TODO 1: Cap the framerate of the gameloop
     double currentDt = frameTime.ReadMs();
+
     if (maxFrameDuration > 0 && currentDt < maxFrameDuration) {
         int delay = (int)(maxFrameDuration - currentDt);
 
@@ -208,7 +211,8 @@ void Engine::FinishUpdate()
     lastSecFrameCount++;
 
     // Average FPS for the whole game life
-    if (lastSecFrameTime.ReadMs() > 1000) {
+    int limit = 1000;
+    if (lastSecFrameTime.ReadMs() > limit) {
         lastSecFrameTime.Start();
         averageFps = (averageFps + lastSecFrameCount) / 2;
         framesPerSecond = lastSecFrameCount;

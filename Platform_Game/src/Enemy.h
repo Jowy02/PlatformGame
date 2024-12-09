@@ -22,6 +22,8 @@ public:
 
 	bool CleanUp();
 
+	void Stop();
+
 	void SetParameters(pugi::xml_node parameters) {
 		this->parameters = parameters;
 	}
