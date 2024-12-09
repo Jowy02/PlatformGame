@@ -43,7 +43,6 @@ bool Scene::Awake()
 		item->SetParameters(itemNode);
 	}
 
-
 	// Create a enemy using the entity manager 
 	for (pugi::xml_node enemyNode = configParameters.child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
 	{
@@ -51,6 +50,8 @@ bool Scene::Awake()
 		enemy->SetParameters(enemyNode);
 		enemyList.push_back(enemy);
 	}
+
+	
 
 	return ret;
 }
@@ -63,6 +64,7 @@ bool Scene::Start()
 	mouseTileTex = Engine::GetInstance().textures.get()->Load("Assets/Maps/MapMetadata.png");
 
 	check = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
+	Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 
 	return true;
 }
@@ -96,7 +98,7 @@ bool Scene::Update(float dt)
 	float camSpeed = 2;
 	Vector2D p = player->position;
 
-	if (p.getX() >= 110 && p.getX() <= 3270 || Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if (p.getX() >= 110 && p.getX() <= 3270 || Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{ 
 		if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			Engine::GetInstance().render.get()->camera.x -= ceil(camSpeed * dt);
@@ -170,10 +172,10 @@ bool Scene::PostUpdate()
 	if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
 
 	//hacer en funcion Load() aparte y llamarla desde aqui
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN || player->GetPosition().getY() >= 300) Load();
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN || player->GetPosition().getY() >= 300) Load();
 	
 	//hacer en funcion Save() aparte y llamarla desde aqui
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && !player->deadAnimation) Save();
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && !player->deadAnimation) Save();
 	if (player->GetPosition().getX() >= Check && player->GetPosition().getX() <= Check + 10){
 		Engine::GetInstance().audio.get()->PlayFx(check);
 		if (actualCheck == 0)actualCheck++;
