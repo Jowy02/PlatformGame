@@ -36,7 +36,10 @@ bool Item::Start() {
 	pbody = Engine::GetInstance().physics.get()->CreateCircle((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, texH / 2, bodyType::DYNAMIC);
 
 	// L08 TODO 7: Assign collider type
-	pbody->ctype = ColliderType::ITEM;
+	if (parameters.attribute("type").as_int()==0) pbody->ctype = ColliderType::ITEM;
+	else if (parameters.attribute("type").as_int() == 1) pbody->ctype = ColliderType::BOOST;
+	else if (parameters.attribute("type").as_int() == 2) pbody->ctype = ColliderType::HEAL;
+
 
 	// Set the gravity of the body
 	if (!parameters.attribute("gravity").as_bool()) pbody->body->SetGravityScale(0);

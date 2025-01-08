@@ -257,6 +257,11 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		break;
+	case ColliderType::BOOST:
+		LOG("Collision ITEM");
+		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
+		break;
 	case ColliderType::ENEMY:
 		LOG("Collision ENEMY");
 		break;

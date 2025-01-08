@@ -12,6 +12,8 @@
 #include "Map.h"
 #include "Item.h"
 #include "Enemy.h"
+#include "GuiControl.h"
+#include "GuiManager.h"
 
 Scene::Scene() : Module()
 {
@@ -50,10 +52,26 @@ bool Scene::Awake()
 		enemy->SetParameters(enemyNode);
 		enemyList.push_back(enemy);
 	}
+	SDL_Rect btPos = { 300, 100, 60,32 };
+	ResumeBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 1, "Resume", btPos, this);
 
-	
+	btPos = { 400, 100, 60,32 };
+	SettingsBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 2, "Settings", btPos, this);
+
+	btPos = { 500, 100, 60,32 };
+	ScapeBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 3, "Escape", btPos, this);
+
+	btPos = { 250, 150, 60,16 };
+	MusicSlider = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::SLIDER, 4, "Music", btPos, this);
+
+	btPos = { 400, 150, 60,16 };
+	FxSlider  = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::SLIDER, 5, "Fx", btPos, this);
+
+	btPos = { 550, 134, 32,32 };
+	FulScreenCb = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::CHECKBOX, 6, "Full Screen", btPos, this);
 
 	return ret;
+
 }
 
 // Called before the first frame
@@ -74,18 +92,18 @@ bool Scene::Start()
 bool Scene::PreUpdate()
 {
 	//Change level(not finished)
-	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
-	//{
-	//	mapLevel = 0;
-	//	Engine::GetInstance().map->CleanUp();
-	//	Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
-	//}
-	//if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
-	//{
-	//	mapLevel = 1;
-	//	Engine::GetInstance().map->CleanUp();
-	//	Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
-	//}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
+	{
+		mapLevel = 0;
+		Engine::GetInstance().map->CleanUp();
+		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+	}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
+	{
+		mapLevel = 1;
+		Engine::GetInstance().map->CleanUp();
+		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
+	}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
 		player->SetPosition({155, 199});
@@ -111,14 +129,10 @@ bool Scene::Update(float dt)
 		Engine::GetInstance().render.get()->camera.x = ((-p.getX())*camSpeed)+200;
 	}
 
-	Vector2D mousePos = Engine::GetInstance().input.get()->GetMousePosition();
-	Vector2D mouseTile = Engine::GetInstance().map.get()->WorldToMap(mousePos.getX() - Engine::GetInstance().render.get()->camera.x,
-																	 mousePos.getY() - Engine::GetInstance().render.get()->camera.y);
 	EnemyHitbox();
 
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
-
 
 	return true;
 }
@@ -168,10 +182,18 @@ void Scene::EnemyHitbox()
 // Called each loop iteration
 bool Scene::PostUpdate()
 {
-	bool ret = true;
 	int Check = Engine::GetInstance().map.get()->checkpoints[actualCheck].getX();
 
-	if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) ret = false;
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN){
+
+		ResumeBt->state = GuiControlState::NORMAL;
+		SettingsBt->state = GuiControlState::NORMAL;
+		ScapeBt->state = GuiControlState::NORMAL;
+
+		MusicSlider->state = GuiControlState::DISABLED;
+		FxSlider->state = GuiControlState::DISABLED;
+		FulScreenCb->state = GuiControlState::DISABLED;
+	}
 
 	//hacer en funcion Load() aparte y llamarla desde aqui
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN || player->GetPosition().getY() >= 300) Load();
@@ -185,7 +207,7 @@ bool Scene::PostUpdate()
 		Save();
 	}
 
-	return ret;
+	return exit;
 }
 
 void Scene::Load()
@@ -245,4 +267,37 @@ bool Scene::CleanUp()
 Vector2D Scene::GetPlayerPosition()
 {
 	return player->GetPosition();
+}
+bool Scene::OnGuiMouseClickEvent(GuiControl* control)
+{
+	// L15: DONE 5: Implement the OnGuiMouseClickEvent method
+	LOG("Press Gui Control: %d", control->id);
+	if (control->id == 1) {
+		ResumeBt->state = GuiControlState::DISABLED;
+		SettingsBt->state = GuiControlState::DISABLED;
+		ScapeBt->state = GuiControlState::DISABLED;
+	}
+	else if (control->id == 2) {
+		ResumeBt->state = GuiControlState::DISABLED;
+		SettingsBt->state = GuiControlState::DISABLED;
+		ScapeBt->state = GuiControlState::DISABLED;
+
+		MusicSlider->state = GuiControlState::NORMAL;
+		FxSlider->state = GuiControlState::NORMAL;
+		FulScreenCb->state = GuiControlState::NORMAL;
+	}
+	else if (control->id == 3) exit = false;
+	else if (control->id == 4) {
+		Engine::GetInstance().audio.get()->SetVolume(control->value);
+	}
+	else if (control->id == 5) {
+		Engine::GetInstance().audio.get()->FxVolume = control->value;
+
+	}
+	else if (control->id == 6){
+		Fullscreen = !Fullscreen;
+		Engine::GetInstance().window.get()->SetScreen(Fullscreen);
+	}
+
+	return true;
 }

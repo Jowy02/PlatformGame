@@ -31,6 +31,7 @@ public:
 public:
 	// The window we'll be rendering to
 	SDL_Window* window;
+	void SetScreen(bool fullscreen);
 
 	std::string title;
 	int width = 1280;

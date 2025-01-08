@@ -47,6 +47,7 @@ bool Audio::Awake()
 		ret = true;
 	}
 
+	FxVolume = 100;
 	return ret;
 }
 
@@ -68,9 +69,11 @@ bool Audio::CleanUp()
 	}
 	fx.clear();
 
+
 	Mix_CloseAudio();
 	Mix_Quit();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
 
 	return true;
 }
@@ -159,13 +162,17 @@ bool Audio::PlayFx(int id, int repeat)
 
 	if(!active)
 		return false;
-
 	if(id > 0 && id <= fx.size())
 	{
 		auto fxIt = fx.begin();
 		std::advance(fxIt, id-1);
 		Mix_PlayChannel(-1, *fxIt, repeat);
+		Mix_Volume(-1, FxVolume);
 	}
 
 	return ret;
+}
+void Audio::SetVolume(int MusicVolume)
+{
+	Mix_VolumeMusic(MusicVolume);
 }

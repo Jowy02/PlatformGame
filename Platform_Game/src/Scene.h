@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include <vector>
+#include "GuiControlButton.h"
 
 struct SDL_Texture;
 
@@ -40,6 +41,8 @@ public:
 	void Save();
 	void Load();
 
+	bool OnGuiMouseClickEvent(GuiControl* control);
+
 	Vector2D GetPlayerPosition();
 
 public:
@@ -58,6 +61,9 @@ private:
 	SDL_Texture* mouseTileTex = nullptr;
 	std::string tilePosDebug = "[0,0]";
 	bool once = false;
+	bool exit = true;
+
+	bool visableBt = false;
 
 	//L03: TODO 3b: Declare a Player attribute
 	Player* player;
@@ -69,4 +75,17 @@ private:
 
 	int margin = 8;
 	int enemyRange = 100;
+
+	GuiControlButton* StartBt;
+
+	GuiControlButton* ResumeBt;
+	GuiControlButton* SettingsBt;
+	GuiControlButton* ScapeBt;
+
+	GuiControlButton* MusicSlider;
+	GuiControlButton* FxSlider;
+	GuiControlButton* FulScreenCb;
+
+	bool Fullscreen = false;
+
 };

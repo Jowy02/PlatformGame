@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="144" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
+			<player x="984" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />
@@ -52,7 +52,7 @@
 				</animations>
 			</player>
 			<items>
-				<item name="coin" x="848" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="848" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -60,7 +60,7 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="880" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="880" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -68,7 +68,7 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="832" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="832" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -76,7 +76,7 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="864" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="864" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -84,7 +84,7 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="896" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="896" y="80" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -92,7 +92,7 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="880" y="64" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="880" y="64" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -100,7 +100,15 @@
 						</idle>
 					</animations>
 				</item>
-				<item name="coin" x="848" y="64" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false">
+				<item name="coin" x="848" y="64" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="0">
+					<animations>
+						<idle loop="true" speed="0.5">
+							<frame x="0" y="0" w="16" h="16" />
+							<frame x="0" y="0" w="16" h="16" />
+						</idle>
+					</animations>
+				</item>
+				<item name="coin" x="848" y="164" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" type="1">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -132,7 +140,7 @@
 						</dead>
 					</animations>
 				</enemy>
-				<enemy name="Boo" x="550" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true">
+				<enemy name="Boo" x="600" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />

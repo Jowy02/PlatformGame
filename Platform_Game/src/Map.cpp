@@ -91,7 +91,7 @@ bool Map::CleanUp()
         delete tileset;
     }
     mapData.tilesets.clear();
-
+    cnt = 0;
     // L07 TODO 2: clean up all layer data
     for (const auto& layer : mapData.layers)
     {
