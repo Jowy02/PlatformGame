@@ -55,6 +55,8 @@ public:
 
 	std::vector<Enemy*> enemyList;
 
+	bool activeMenu = true;
+
 private:
 	SDL_Texture* img;
 
@@ -62,8 +64,8 @@ private:
 	std::string tilePosDebug = "[0,0]";
 	bool once = false;
 	bool exit = true;
-
 	bool visableBt = false;
+
 
 	//L03: TODO 3b: Declare a Player attribute
 	Player* player;
@@ -77,7 +79,10 @@ private:
 	int enemyRange = 100;
 
 	GuiControlButton* StartBt;
+	GuiControlButton* ContinuetBt;
+	GuiControlButton* CreditstBt;
 
+	GuiControlButton* BackTitleBt;
 	GuiControlButton* ResumeBt;
 	GuiControlButton* SettingsBt;
 	GuiControlButton* ScapeBt;
@@ -87,5 +92,7 @@ private:
 	GuiControlButton* FulScreenCb;
 
 	bool Fullscreen = false;
+
+	SDL_Texture* Menu = nullptr;
 
 };

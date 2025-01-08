@@ -75,7 +75,8 @@ bool Player::Start() {
 
 bool Player::Update(float dt)
 {	
-	
+	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
+
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	// L08 TODO 5: Add physics to the player - updated player position using physics
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F10) == KEY_DOWN){ 
@@ -101,7 +102,7 @@ bool Player::Update(float dt)
 			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_H) == KEY_DOWN) LOG("PLAYER POS : %d", position.getX());
 			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
 			{
-				velocity.x = -0.2 * dt;
+				velocity.x = -marioVel * dt;
 				currentAnimation = &backwalk;
 				look = true;
 			}
@@ -109,7 +110,7 @@ bool Player::Update(float dt)
 			// Move right
 			else if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
 			{
-				velocity.x = 0.2 * dt;
+				velocity.x = marioVel * dt;
 				currentAnimation = &walk;
 				look = false;
 			}
@@ -168,7 +169,7 @@ bool Player::Update(float dt)
 		}
 		else if (hitL)
 		{
-
+			
 			if (cnt <= 10)
 			{
 				currentAnimation = &dead;
@@ -183,6 +184,7 @@ bool Player::Update(float dt)
 			}
 			else {
 				hitL = false;
+				health -=10;
 				cnt = 0;
 			}
 
@@ -204,11 +206,21 @@ bool Player::Update(float dt)
 			}
 			else {
 				hitR = false;
+				health -=10;
 				cnt = 0;
 			}
 		}
 
 		if ((int)position.getY() >= 270) deadAnimation = true;
+
+		if (plusVel) {
+			marioVel = 0.3f;
+			coldown++;
+			if (coldown >= 200) {
+				marioVel = 0.2f;
+				plusVel = false;
+			}
+		}
 
 	}
 
@@ -256,11 +268,14 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		LOG("Collision ITEM");
 		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
+		coins++;
 		break;
 	case ColliderType::BOOST:
 		LOG("Collision ITEM");
 		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
+		plusVel = true;
+		
 		break;
 	case ColliderType::ENEMY:
 		LOG("Collision ENEMY");

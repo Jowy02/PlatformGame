@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="984" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
+			<player x="987" y="192" w="15" h="15" texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />
@@ -140,7 +140,7 @@
 						</dead>
 					</animations>
 				</enemy>
-				<enemy name="Boo" x="600" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true">
+				<enemy name="Boo" x="565" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />

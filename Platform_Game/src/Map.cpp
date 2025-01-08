@@ -85,6 +85,11 @@ TileSet* Map::GetTilesetFromTileId(int gid) const
 bool Map::CleanUp()
 {
     LOG("Unloading map");
+    for (PhysBody* body : Engine::GetInstance().physics->colider)
+    {
+        Engine::GetInstance().physics->DeletePhysBody(body);
+    }
+    Engine::GetInstance().physics->colider.clear();
 
     // L06: TODO 2: Make sure you clean up any memory allocated from tilesets/map
     for (const auto& tileset : mapData.tilesets) {
@@ -92,19 +97,8 @@ bool Map::CleanUp()
     }
     mapData.tilesets.clear();
     cnt = 0;
-    // L07 TODO 2: clean up all layer data
-    for (const auto& layer : mapData.layers)
-    {
-        delete layer;
-    }
+
     mapData.layers.clear();
-
-    for (PhysBody* body : Engine::GetInstance().physics->colider)
-    {
-        Engine::GetInstance().physics->DeletePhysBody(body);
-    }
-    Engine::GetInstance().physics->colider.clear();
-
     return true;
 }
 

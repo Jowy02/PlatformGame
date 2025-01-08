@@ -54,6 +54,8 @@ public:
 	// L08 TODO 5: Add physics to the player - declare a Physics body
 	PhysBody* pbody;
 	float jumpForce = 0.35f; // The force to apply when jumping
+	float marioVel = 0.2f;
+
 	bool isJumping = false; // Flag to check if the player is currently jumping
 	bool godmode = false;
 
@@ -67,6 +69,11 @@ public:
 	bool kill = false;
 
 	int cnt = 0; 
+	int coins = 0;
+	int health = 200;
+
+	bool plusVel = false;
+	int coldown = 0;
 
 	pugi::xml_node parameters;
 	Animation* currentAnimation = nullptr;

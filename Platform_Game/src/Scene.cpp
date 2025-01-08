@@ -52,14 +52,19 @@ bool Scene::Awake()
 		enemy->SetParameters(enemyNode);
 		enemyList.push_back(enemy);
 	}
-	SDL_Rect btPos = { 300, 100, 60,32 };
+
+	SDL_Rect btPos = { 100, 100, 60,32 };
+	BackTitleBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 0, "Title", btPos, this);
+
+	btPos = { 250, 100, 60,32 };
 	ResumeBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 1, "Resume", btPos, this);
 
 	btPos = { 400, 100, 60,32 };
 	SettingsBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 2, "Settings", btPos, this);
 
-	btPos = { 500, 100, 60,32 };
-	ScapeBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 3, "Escape", btPos, this);
+	btPos = { 550, 100, 60,32 };
+	ScapeBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 3, "EXIT", btPos, this);
+
 
 	btPos = { 250, 150, 60,16 };
 	MusicSlider = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::SLIDER, 4, "Music", btPos, this);
@@ -69,6 +74,21 @@ bool Scene::Awake()
 
 	btPos = { 550, 134, 32,32 };
 	FulScreenCb = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::CHECKBOX, 6, "Full Screen", btPos, this);
+
+	//Init Butons
+	btPos = { 250, 100, 60,32 };
+	StartBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 7, "Start ", btPos, this);
+
+	btPos = { 100, 100, 60,32 };
+	ContinuetBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 8, "Continue", btPos, this);
+
+	btPos = { 700, 100, 60,32 };
+	CreditstBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 9, "Credits", btPos, this);
+	CreditstBt->state = GuiControlState::NORMAL;
+	ContinuetBt->state = GuiControlState::NORMAL;
+	StartBt->state = GuiControlState::NORMAL;
+	ScapeBt->state = GuiControlState::NORMAL;
+	SettingsBt->state = GuiControlState::NORMAL;
 
 	return ret;
 
@@ -80,10 +100,10 @@ bool Scene::Start()
 	//L06 TODO 3: Call the function to load the map. 
 	Engine::GetInstance().map->Load(configParameters.child("map").attribute("path").as_string(), configParameters.child("map").attribute("name").as_string());
 	mouseTileTex = Engine::GetInstance().textures.get()->Load("Assets/Maps/MapMetadata.png");
+	Menu = Engine::GetInstance().textures.get()->Load("Assets/Textures/world1-1.png");
 
 	check = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
 
-	Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 
 	return true;
 }
@@ -97,12 +117,14 @@ bool Scene::PreUpdate()
 		mapLevel = 0;
 		Engine::GetInstance().map->CleanUp();
 		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+		player->SetPosition({ 155, 199 });
 	}
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0)
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0 || player->GetPosition().getX() >= 3500)
 	{
 		mapLevel = 1;
 		Engine::GetInstance().map->CleanUp();
 		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
+		player->SetPosition({ 155, 199 });
 	}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
@@ -114,25 +136,41 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
+	SDL_Rect sliderKnob = { 200, 10, player->health,20 };
+
 	//L03 TODO 3: Make the camera movement independent of framerate
-	float camSpeed = 2;
-	Vector2D p = player->position;
+	if (!activeMenu)
+	{
+		float camSpeed = 2;
+		Vector2D p = player->position;
 
-	if (p.getX() >= 110 && p.getX() <= 3270 || Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
-	{ 
-		if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-			Engine::GetInstance().render.get()->camera.x -= ceil(camSpeed * dt);
+		if (p.getX() >= 110 && p.getX() <= 3270 || Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+		{ 
+			if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+				Engine::GetInstance().render.get()->camera.x -= ceil(camSpeed * dt);
 
-		if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-			Engine::GetInstance().render.get()->camera.x += ceil(camSpeed * dt);
+			if(Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+				Engine::GetInstance().render.get()->camera.x += ceil(camSpeed * dt);
 
-		Engine::GetInstance().render.get()->camera.x = ((-p.getX())*camSpeed)+200;
+			Engine::GetInstance().render.get()->camera.x = ((-p.getX())*camSpeed)+200;
+		}
+
+		EnemyHitbox();
+
+		if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+			for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
+
+		Engine::GetInstance().render->DrawText("COINS:", 10, 10, 40, 20);
+		Engine::GetInstance().render->DrawText(std::to_string(player->coins).c_str(), 60, 10, 10, 20);
+
+		Engine::GetInstance().render->DrawText("HEALTH:", 160, 10, 40, 20);
+		Engine::GetInstance().render->DrawRectangle(sliderKnob, 0, 0, 255, 255, true, false);
+
 	}
+	else {
 
-	EnemyHitbox();
-
-	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
-		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->active = true;
+		Engine::GetInstance().render.get()->DrawTexture(Menu, 0, 0);
+	}
 
 	return true;
 }
@@ -185,14 +223,33 @@ bool Scene::PostUpdate()
 	int Check = Engine::GetInstance().map.get()->checkpoints[actualCheck].getX();
 
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN){
+		if (activeMenu) {
 
-		ResumeBt->state = GuiControlState::NORMAL;
-		SettingsBt->state = GuiControlState::NORMAL;
-		ScapeBt->state = GuiControlState::NORMAL;
+			CreditstBt->state = GuiControlState::NORMAL;
+			ContinuetBt->state = GuiControlState::NORMAL;
+			StartBt->state = GuiControlState::NORMAL;
+			SettingsBt->state = GuiControlState::NORMAL;
+			ScapeBt->state = GuiControlState::NORMAL;
 
-		MusicSlider->state = GuiControlState::DISABLED;
-		FxSlider->state = GuiControlState::DISABLED;
-		FulScreenCb->state = GuiControlState::DISABLED;
+			MusicSlider->state = GuiControlState::DISABLED;
+			FxSlider->state = GuiControlState::DISABLED;
+			FulScreenCb->state = GuiControlState::DISABLED;
+
+		}
+		else
+		{
+			BackTitleBt->state = GuiControlState::NORMAL;
+			ResumeBt->state = GuiControlState::NORMAL;
+			SettingsBt->state = GuiControlState::NORMAL;
+			ScapeBt->state = GuiControlState::NORMAL;
+			BackTitleBt->state = GuiControlState::NORMAL;
+
+
+			MusicSlider->state = GuiControlState::DISABLED;
+			FxSlider->state = GuiControlState::DISABLED;
+			FulScreenCb->state = GuiControlState::DISABLED;
+		}
+
 	}
 
 	//hacer en funcion Load() aparte y llamarla desde aqui
@@ -206,6 +263,7 @@ bool Scene::PostUpdate()
 		else actualCheck--;
 		Save();
 	}
+
 
 	return exit;
 }
@@ -271,16 +329,40 @@ Vector2D Scene::GetPlayerPosition()
 bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 {
 	// L15: DONE 5: Implement the OnGuiMouseClickEvent method
-	LOG("Press Gui Control: %d", control->id);
-	if (control->id == 1) {
+
+	if (control->id == 0) {
 		ResumeBt->state = GuiControlState::DISABLED;
 		SettingsBt->state = GuiControlState::DISABLED;
 		ScapeBt->state = GuiControlState::DISABLED;
+		CreditstBt->state = GuiControlState::DISABLED;
+		ContinuetBt->state = GuiControlState::DISABLED;
+		StartBt->state = GuiControlState::DISABLED;
+		BackTitleBt->state = GuiControlState::DISABLED;
+
+		CreditstBt->state = GuiControlState::NORMAL;
+		ContinuetBt->state = GuiControlState::NORMAL;
+		StartBt->state = GuiControlState::NORMAL;
+		ScapeBt->state = GuiControlState::NORMAL;
+		SettingsBt->state = GuiControlState::NORMAL;
+
+		Engine::GetInstance().audio.get()->StopMusic();
+		activeMenu = true;
+	}
+	else if (control->id == 1) {
+		ResumeBt->state = GuiControlState::DISABLED;
+		SettingsBt->state = GuiControlState::DISABLED;
+		ScapeBt->state = GuiControlState::DISABLED;
+		BackTitleBt->state = GuiControlState::DISABLED;
+
 	}
 	else if (control->id == 2) {
 		ResumeBt->state = GuiControlState::DISABLED;
 		SettingsBt->state = GuiControlState::DISABLED;
 		ScapeBt->state = GuiControlState::DISABLED;
+		CreditstBt->state = GuiControlState::DISABLED;
+		ContinuetBt->state = GuiControlState::DISABLED;
+		StartBt->state = GuiControlState::DISABLED;
+		BackTitleBt->state = GuiControlState::DISABLED;
 
 		MusicSlider->state = GuiControlState::NORMAL;
 		FxSlider->state = GuiControlState::NORMAL;
@@ -297,6 +379,17 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 	else if (control->id == 6){
 		Fullscreen = !Fullscreen;
 		Engine::GetInstance().window.get()->SetScreen(Fullscreen);
+	}
+	else if (control->id == 7) {
+		CreditstBt->state = GuiControlState::DISABLED;
+		ContinuetBt->state = GuiControlState::DISABLED;
+		StartBt->state = GuiControlState::DISABLED;
+		SettingsBt->state = GuiControlState::DISABLED;
+		ScapeBt->state = GuiControlState::DISABLED;
+
+		activeMenu = false;
+
+		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 	}
 
 	return true;

@@ -69,7 +69,7 @@ bool Audio::CleanUp()
 	}
 	fx.clear();
 
-
+	
 	Mix_CloseAudio();
 	Mix_Quit();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -175,4 +175,9 @@ bool Audio::PlayFx(int id, int repeat)
 void Audio::SetVolume(int MusicVolume)
 {
 	Mix_VolumeMusic(MusicVolume);
+}
+
+void Audio::StopMusic()
+{
+	if (music != NULL) Mix_HaltMusic();
 }

@@ -53,7 +53,8 @@ bool Enemy::Start() {
 
 bool Enemy::Update(float dt)
 {
-	
+	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
+
 	if (playerNear && !flyingEnemy)
 	{
 		pathfinding->PropagateBFS();
