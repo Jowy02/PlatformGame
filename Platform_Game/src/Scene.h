@@ -3,6 +3,7 @@
 #include "Module.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Item.h"
 #include <vector>
 #include "GuiControlButton.h"
 
@@ -54,6 +55,8 @@ public:
 	int mapLevel = 0;
 
 	std::vector<Enemy*> enemyList;
+	std::vector<Item*> itemList;
+
 
 	bool activeMenu = true;
 
@@ -94,5 +97,6 @@ private:
 	bool Fullscreen = false;
 
 	SDL_Texture* Menu = nullptr;
-
+	Timer inGameTimer;
+	int minutes = 0;
 };

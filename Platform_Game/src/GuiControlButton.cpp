@@ -70,7 +70,8 @@ bool GuiControlButton::Update(float dt)
 				Engine::GetInstance().render->DrawRectangle(bounds, 0, 255, 0, 255, true, false);
 				break;
 			}
-			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, bounds.w, bounds.h);
+			int scaleText = text.length();
+			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, scaleText*10, bounds.h);
 		}
 	}
 	else if (GuiControl::type == GuiControlType::SLIDER)
@@ -99,8 +100,6 @@ bool GuiControlButton::Update(float dt)
 
 					NotifyObserver();
 				}
-
-				
 			}
 			else
 			{
@@ -128,8 +127,12 @@ bool GuiControlButton::Update(float dt)
 			Engine::GetInstance().render->DrawRectangle(sliderKnob, 0, 0, 255, 255, true, false);
 
 			// Dibujar el texto del slider y el valor actual
-			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y - 20, bounds.w, 20);
-			Engine::GetInstance().render->DrawText(std::to_string(value).c_str(), bounds.x + bounds.w + 10, bounds.y, 50, bounds.h);
+			int scaleText = text.length();
+			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y - 20,scaleText*10, 20);
+			scaleText = 1;
+			if (value > 10)scaleText = 2;
+			if (value == 100)scaleText = 3;
+			Engine::GetInstance().render->DrawText(std::to_string(value).c_str(), bounds.x + bounds.w + 10, bounds.y, scaleText*10, bounds.h);
 		}
 	}
 	else if (GuiControl::type == GuiControlType::CHECKBOX) {

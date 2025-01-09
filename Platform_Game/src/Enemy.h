@@ -38,6 +38,8 @@ public:
 	bool found = false;
 	bool playerNear = false;
 	Vector2D initialPos;
+	bool startFight = false;
+	bool hited = false;
 
 private:
 
@@ -66,4 +68,7 @@ private:
 	int dir = 0; //hacer defines coon izquierda = 0 y derecha = 1
 	int dirUD = 0;
 
+	bool boss = false;
+	int fase = 0;
+	int boosPath = 0;
 };

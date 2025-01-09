@@ -96,7 +96,7 @@ bool Player::Update(float dt)
 	}
 
 	if(godmode==false){	
-		if(!deadAnimation && !hitL && !hitR)
+		if(!deadAnimation && !hitL && !hitR && health>0)
 		{
 			// Move left
 			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_H) == KEY_DOWN) LOG("PLAYER POS : %d", position.getX());
@@ -210,7 +210,25 @@ bool Player::Update(float dt)
 				cnt = 0;
 			}
 		}
+		else if (health <= 0) {
+			currentAnimation = &dead;
 
+			if (!oneTime) {
+				pbody->body->ApplyLinearImpulseToCenter(b2Vec2(0, -0.2f), true);
+				Engine::GetInstance().audio.get()->PlayFx(dieSfx);
+				oneTime = true;
+				cnt = 0;
+			}
+
+			velocity.y = pbody->body->GetLinearVelocity().y;
+			pbody->body->SetLinearVelocity(velocity);
+
+			b2Transform pbodyPos = pbody->body->GetTransform();
+			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
+			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
+			cnt++;
+			
+		}
 		if ((int)position.getY() >= 270) deadAnimation = true;
 
 		if (plusVel) {
@@ -276,6 +294,15 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		plusVel = true;
 		
+		break;
+	case ColliderType::HEAL:
+		LOG("Collision ITEM");
+		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
+		if (health < 200){
+			health += 50;
+			if (health > 200)health = 200;
+		}
 		break;
 	case ColliderType::ENEMY:
 		LOG("Collision ENEMY");
