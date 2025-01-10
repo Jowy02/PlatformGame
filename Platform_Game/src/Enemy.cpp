@@ -34,8 +34,16 @@ bool Enemy::Start() {
 	boss = parameters.attribute("boss").as_bool();
 
 	//Load animations
-	idle.LoadAnimations(parameters.child("animations").child("idle"));
-	currentAnimation = &idle;
+
+	idle_R.LoadAnimations(parameters.child("animations").child("idleR"));
+	idle_L.LoadAnimations(parameters.child("animations").child("idleL"));
+
+	currentAnimation = &idle_L;
+	invisible_idle_R.LoadAnimations(parameters.child("animations").child("invisible_idleR"));
+	invisible_idle_L.LoadAnimations(parameters.child("animations").child("invisible_idleL"));
+
+	hit.LoadAnimations(parameters.child("animations").child("hit"));
+
 	initialPos = position;
 	//Add a physics to an item - initialize the physics body
 	pbody = Engine::GetInstance().physics.get()->CreateRectangleSensor((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, 16,16, bodyType::KINEMATIC);
@@ -57,6 +65,7 @@ bool Enemy::Update(float dt)
 {
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	Vector2D enemyPos = GetPosition();
+	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
 
 	if (boss)
 	{
@@ -68,29 +77,101 @@ bool Enemy::Update(float dt)
 				if (boosPath < 60)velocity.x = -0.2 * dt;
 				else if (boosPath < 100 )velocity.y = 0.2 * dt;
 				else if (boosPath < 160) velocity.x = -0.2 * dt;
-				else if (boosPath < 200) velocity.y = -0.2 * dt;
+				else if (boosPath < 200){
+					velocity.y = -0.2 * dt;
+					currentAnimation = &idle_R;
+				}
 				else if (boosPath < 260) velocity.x = 0.2 * dt;
 				else if (boosPath < 300) velocity.y = 0.2 * dt;
 				else if (boosPath < 360) velocity.x = 0.2 * dt;
-				else if (boosPath < 400) velocity.y = -0.2 * dt;
-				if (boosPath >= 440)boosPath = 0;
+				else if (boosPath < 400){
+					velocity.y = -0.2 * dt;
+					currentAnimation = &idle_L;
+				}
+
+				if (boosPath >= 400)boosPath = 0;
 			}
 			else if (fase == 1 && !hited) {
+
 				if (boosPath < 125)velocity.x = -0.2 * dt;
-				else if (boosPath < 135)velocity.y = 0.2 * dt;
+				else if (boosPath < 135){
+					velocity.y = 0.2 * dt;
+					currentAnimation = &idle_R;
+				}
 				else if (boosPath < 260) velocity.x = 0.2 * dt;
-				else if (boosPath < 270) velocity.y = 0.2 * dt;
-				else if (boosPath < 295) velocity.x = -0.2 * dt;
-				else if (boosPath < 305) velocity.y = 0.2 * dt;
-				else if (boosPath < 330) velocity.x = -0.2 * dt;
-				//else if (boosPath < 400) velocity.y = 0.2 * dt;
+				else if (boosPath < 270){
+					velocity.y = 0.2 * dt;
+					currentAnimation = &idle_L;
+				}
+				else if (boosPath < 395) velocity.x = -0.2 * dt;
+				else if (boosPath < 405){
+					velocity.y = 0.2 * dt;
+					currentAnimation = &idle_R;
+				}
+				else if (boosPath < 530) velocity.x = 0.2 * dt;
+				else if (boosPath < 540){
+					velocity.y = 0.2 * dt;
+					currentAnimation = &idle_L;
+				}
+				else if (boosPath < 665) velocity.x = -0.2 * dt;
+				else if (boosPath < 675){
+					velocity.y = 0.2 * dt;
+					currentAnimation = &idle_R;
+				}
+				else if (boosPath < 800) velocity.x = 0.2 * dt;
+				else if (boosPath < 850){
+					velocity.y = -0.2 * dt;
+					currentAnimation = &idle_L;
+				}
+				if (boosPath >= 850)boosPath = 0;
+			}
+			else if (fase == 2 && !hited) {
+
+				if (boosPath < 80){
+					velocity.x = -0.32 * dt;
+					velocity.y = 0.1 * dt;
+				}
+				else if (boosPath < 120){
+					velocity.y = -0.2 * dt;
+					currentAnimation = &invisible_idle_R;
+				}
+
+				else if (boosPath < 198) {
+					velocity.x = 0.32 * dt;
+					velocity.y = 0.1 * dt;
+				}
+				else if (boosPath < 238){
+					velocity.y = -0.2 * dt;
+					currentAnimation = &invisible_idle_L;
+				}
+
+				if (boosPath >= 238)boosPath = 0;
+
+			}
+			else if (fase == 3) {
+				
+				if (boosPath < 200) velocity.y = 0.2 * dt;
 			}
 			else {
-				fase++;
-				boosPath = 0;
-				b2Vec2 bodyPos = b2Vec2(PIXEL_TO_METERS(700), PIXEL_TO_METERS(50));
-				pbody->body->SetTransform(bodyPos, 0);
-				hited = false;
+				if(hitColdwon>50)
+				{ 
+					fase++;
+					if (fase == 2)currentAnimation = &invisible_idle_L;
+					else if (fase!=3) currentAnimation = &idle_L;
+
+					boosPath = 0;
+					if (fase != 3){
+						b2Vec2 bodyPos = b2Vec2(PIXEL_TO_METERS(700), PIXEL_TO_METERS(50));
+						pbody->body->SetTransform(bodyPos, 0);
+					}
+					hited = false;
+					hitColdwon = 0;
+				}
+				else {
+					hitColdwon++;
+					currentAnimation = &hit;
+				}
+
 			}
 
 			boosPath++;
@@ -105,7 +186,6 @@ bool Enemy::Update(float dt)
 	}
 	else {
 
-		if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
 
 		if (playerNear && !flyingEnemy)
 		{

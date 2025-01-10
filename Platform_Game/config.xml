@@ -164,12 +164,35 @@
 						</idle>
 					</animations>
 				</enemy>
-				<enemy name="KingBoo" x="700" y="50" w="32" h="32" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true" boss="true">
+				<enemy name="KingBoo" x="700" y="50" w="32" h="32" texture="Assets/Textures/enemy/KingBoo.png" gravity="true" dead="true" flying="true" boss="true">
 					<animations>
-						<idle loop="true" speed="0.1">
+						<idleR loop="true" speed="0.1">
 							<frame x="0" y="0" w="32" h="32" />
-							<frame x="16" y="0" w="32" h="32" />
-						</idle>
+							<frame x="32" y="0" w="32" h="32" />
+							<frame x="64" y="0" w="32" h="32" />
+							<frame x="96" y="0" w="32" h="32" />
+						</idleR>
+						<idleL loop="true" speed="0.1">
+							<frame x="0" y="64" w="32" h="32" />
+							<frame x="32" y="64" w="32" h="32" />
+							<frame x="64" y="64" w="32" h="32" />
+							<frame x="96" y="64" w="32" h="32" />
+						</idleL>
+						<invisible_idleR loop="true" speed="0.1">
+							<frame x="0" y="32" w="32" h="32" />
+							<frame x="32" y="32" w="32" h="32" />
+							<frame x="64" y="32" w="32" h="32" />
+							<frame x="96" y="32" w="32" h="32" />
+						</invisible_idleR>
+						<invisible_idleL loop="true" speed="0.1">
+							<frame x="0" y="96" w="32" h="32" />
+							<frame x="32" y="96" w="32" h="32" />
+							<frame x="64" y="96" w="32" h="32" />
+							<frame x="96" y="96" w="32" h="32" />
+						</invisible_idleL>
+						<hit loop="true" speed="0.1">
+							<frame x="160" y="0" w="32" h="32" />
+						</hit>
 					</animations>
 				</enemy>
 			</enemies>

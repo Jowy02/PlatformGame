@@ -90,7 +90,6 @@ bool Scene::Awake()
 	StartBt->state = GuiControlState::NORMAL;
 	ScapeBt->state = GuiControlState::NORMAL;
 	SettingsBt->state = GuiControlState::NORMAL;
-
 	return ret;
 
 }
@@ -121,6 +120,8 @@ bool Scene::PreUpdate()
 		Load();
 		enemyList[enemyList.size() - 1]->Disable();
 		player->SetPosition({ 155, 192 });
+		Engine::GetInstance().audio.get()->StopMusic();
+		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 	}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && mapLevel == 0 || player->GetPosition().getX() >= 3500)
 	{
@@ -135,6 +136,9 @@ bool Scene::PreUpdate()
 		Engine::GetInstance().map->CleanUp();
 		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
 		player->SetPosition({ 111, 192 });
+
+		Engine::GetInstance().audio.get()->StopMusic();
+		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/King Boo Theme.ogg", 0.f);
 	}
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
@@ -194,9 +198,11 @@ bool Scene::Update(float dt)
 		Engine::GetInstance().render->DrawText(std::to_string(minutes).c_str(), 645, 10, scaleText * 10, 20);
 
 	}
-	else {
-
+	if (activeMenu){
+		Engine::GetInstance().render.get()->camera.x = 0;
 		Engine::GetInstance().render.get()->DrawTexture(Menu, 0, 0);
+		Engine::GetInstance().map.get()->noUpdate = true;
+
 	}
 
 	return true;
@@ -243,6 +249,7 @@ void Scene::EnemyHitbox()
 			}
 		}
 	}
+
 }
 
 // Called each loop iteration
@@ -290,7 +297,6 @@ bool Scene::PostUpdate()
 			player->cnt = 0;
 			player->SetPosition({ 111, 192 });
 		}
-
 	}
 
 	//hacer en funcion Save() aparte y llamarla desde aqui
@@ -301,7 +307,6 @@ bool Scene::PostUpdate()
 		else actualCheck--;
 		Save();
 	}
-
 
 	return exit;
 }
@@ -387,6 +392,8 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 		SettingsBt->state = GuiControlState::NORMAL;
 
 		Engine::GetInstance().audio.get()->StopMusic();
+		Engine::GetInstance().map.get()->noUpdate = true;
+
 		activeMenu = true;
 	}
 	else if (control->id == 1) {
@@ -429,7 +436,8 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 		ScapeBt->state = GuiControlState::DISABLED;
 
 		activeMenu = false;
-
+		Engine::GetInstance().map.get()->noUpdate = false;
+		inGameTimer.Start();
 		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
 	}
 

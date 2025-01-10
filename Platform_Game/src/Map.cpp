@@ -33,6 +33,8 @@ bool Map::Start() {
 bool Map::Update(float dt)
 {
     bool ret = true;
+    if (noUpdate) return ret;
+    
 
     if (mapLoaded) {
         for (const auto& mapLayer : mapData.layers) {

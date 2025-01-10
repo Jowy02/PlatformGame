@@ -48,9 +48,15 @@ private:
 	int texW, texH;
 	pugi::xml_node parameters;
 	Animation* currentAnimation = nullptr;
-	Animation idle;
+	Animation idle_R;
+	Animation invisible_idle_R;
+	Animation idle_L;
+	Animation invisible_idle_L;
+	Animation hit;
+
 	PhysBody* pbody;
 	Pathfinding* pathfinding;
+
 
 	const char* typeEnemy;
 
@@ -71,4 +77,6 @@ private:
 	bool boss = false;
 	int fase = 0;
 	int boosPath = 0;
+	int hitColdwon = 0;
+
 };

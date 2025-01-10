@@ -154,6 +154,7 @@ public:
     MapLayer* GetNavigationLayer();
 
     int mapLevel = 0;
+    bool noUpdate = false;
 
 public: 
     std::string mapFileName;
@@ -166,4 +167,7 @@ private:
     bool mapLoaded;
     // L06: DONE 1: Declare a variable data of the struct MapData
     MapData mapData;
+
+    SDL_Texture* Menu = nullptr;
+
 };
