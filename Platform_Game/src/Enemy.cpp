@@ -34,16 +34,21 @@ bool Enemy::Start() {
 	boss = parameters.attribute("boss").as_bool();
 
 	//Load animations
+	if (boss) {
 
-	idle_R.LoadAnimations(parameters.child("animations").child("idleR"));
-	idle_L.LoadAnimations(parameters.child("animations").child("idleL"));
+		idle_R.LoadAnimations(parameters.child("animations").child("idleR"));
+		idle_L.LoadAnimations(parameters.child("animations").child("idleL"));
 
-	currentAnimation = &idle_L;
-	invisible_idle_R.LoadAnimations(parameters.child("animations").child("invisible_idleR"));
-	invisible_idle_L.LoadAnimations(parameters.child("animations").child("invisible_idleL"));
+		currentAnimation = &idle_L;
+		invisible_idle_R.LoadAnimations(parameters.child("animations").child("invisible_idleR"));
+		invisible_idle_L.LoadAnimations(parameters.child("animations").child("invisible_idleL"));
 
-	hit.LoadAnimations(parameters.child("animations").child("hit"));
-
+		hit.LoadAnimations(parameters.child("animations").child("hit"));
+	}
+	else {
+		idle.LoadAnimations(parameters.child("animations").child("idle"));
+		currentAnimation = &idle;
+	}
 	initialPos = position;
 	//Add a physics to an item - initialize the physics body
 	pbody = Engine::GetInstance().physics.get()->CreateRectangleSensor((int)position.getX() + texH / 2, (int)position.getY() + texH / 2, 16,16, bodyType::KINEMATIC);

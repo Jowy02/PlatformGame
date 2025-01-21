@@ -41,6 +41,8 @@ public:
 
 	void Save();
 	void Load();
+	void StartNewGame();
+
 
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
@@ -69,6 +71,7 @@ private:
 	bool exit = true;
 	bool visableBt = false;
 
+	bool start = true;
 
 	//L03: TODO 3b: Declare a Player attribute
 	Player* player;

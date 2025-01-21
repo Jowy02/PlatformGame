@@ -38,11 +38,12 @@ bool Scene::Awake()
 	//L08 Create a new item using the entity manager and set the position to (200, 672) to test
 	//Item* item = (Item*) Engine::GetInstance().entityManager->CreateEntity(EntityType::ITEM);
 	//item->position = Vector2D(16, 192);
-
+	int id = 0;
 	for (pugi::xml_node itemNode = configParameters.child("entities").child("items").child("item"); itemNode; itemNode = itemNode.next_sibling("item"))
 	{
 		Item* item = (Item*)Engine::GetInstance().entityManager->CreateEntity(EntityType::ITEM);
-		item->SetParameters(itemNode);
+		item->SetParameters(itemNode, id);
+		id++;
 		itemList.push_back(item);
 	}
 
@@ -54,7 +55,7 @@ bool Scene::Awake()
 		enemyList.push_back(enemy);
 	}
 
-	SDL_Rect btPos = { 100, 100, 60,32 };
+	SDL_Rect btPos = { 140, 100, 60,32 };
 	BackTitleBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 0, "Title", btPos, this);
 
 	btPos = { 250, 100, 60,32 };
@@ -78,15 +79,15 @@ bool Scene::Awake()
 
 	//Init Butons
 	btPos = { 250, 100, 60,32 };
-	StartBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 7, "Start ", btPos, this);
+	StartBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 8, "Start ", btPos, this);
 
 	btPos = { 100, 100, 60,32 };
-	ContinuetBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 8, "Continue", btPos, this);
+	ContinuetBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 7, "Continue", btPos, this);
 
 	btPos = { 700, 100, 60,32 };
 	CreditstBt = (GuiControlButton*)Engine::GetInstance().guiManager->CreateGuiControl(GuiControlType::BUTTON, 9, "Credits", btPos, this);
 	CreditstBt->state = GuiControlState::NORMAL;
-	ContinuetBt->state = GuiControlState::NORMAL;
+	ContinuetBt->state = GuiControlState::JUST_VISIBLE;
 	StartBt->state = GuiControlState::NORMAL;
 	ScapeBt->state = GuiControlState::NORMAL;
 	SettingsBt->state = GuiControlState::NORMAL;
@@ -111,7 +112,7 @@ bool Scene::Start()
 // Called each loop iteration
 bool Scene::PreUpdate()
 {
-	//Change level(not finished)
+	//Change level
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F1) == KEY_DOWN && mapLevel == 1 )
 	{
 		mapLevel = 0;
@@ -119,6 +120,9 @@ bool Scene::PreUpdate()
 		Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
 		Load();
 		enemyList[enemyList.size() - 1]->Disable();
+		for (int y = 0; y < itemList.size(); y++) {
+			itemList[y]->Enable();
+		}
 		player->SetPosition({ 155, 192 });
 		Engine::GetInstance().audio.get()->StopMusic();
 		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
@@ -144,6 +148,32 @@ bool Scene::PreUpdate()
 
 		if(mapLevel == 0)player->SetPosition({155, 199});
 		else player->SetPosition({ 111, 192 });
+	}
+	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F7) == KEY_DOWN) {
+		if (mapLevel == 0)
+		{
+			if (actualCheck == 0) {
+				float x = Engine::GetInstance().map.get()->checkpoints[0].getX();
+				float y = Engine::GetInstance().map.get()->checkpoints[0].getY();
+				player->SetPosition({ x, y });
+				actualCheck = 1;
+			}
+			else if (actualCheck == 1) {
+				float x = Engine::GetInstance().map.get()->checkpoints[1].getX();
+				float y = Engine::GetInstance().map.get()->checkpoints[1].getY();
+				player->SetPosition({ x, y });
+				actualCheck = 2;
+
+			}
+			else if(actualCheck == 2){
+				player->SetPosition({ 111, 192 });
+				actualCheck = 0;
+
+			}
+		}
+		else {
+			player->SetPosition({ 111, 192 });
+		}
 	}
 	if (player->GetPosition().getX() >= 350 && mapLevel == 1) enemyList[enemyList.size() - 1]->startFight = true;
 	return true;
@@ -289,13 +319,41 @@ bool Scene::PostUpdate()
 
 	//hacer en funcion Load() aparte y llamarla desde aqui
 	if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_F6) == KEY_DOWN || player->GetPosition().getY() >= 300 || (player->health<=0&&player->cnt>=100)){
-		if(mapLevel==0)Load();
-		if(mapLevel == 1){
-			player->deadAnimation = false;
-			player->oneTime = false;
-			player->health = 200;
-			player->cnt = 0;
+		//if(mapLevel==0)Load();
+		//if(mapLevel == 1){
+		//	player->deadAnimation = false;
+		//	player->oneTime = false;
+		//	player->health = 200;
+		//	player->cnt = 0;
+		//	player->SetPosition({ 111, 192 });
+		//}
+
+		if (configFile.child("config").child("scene").child("entities").child("player").attribute("level").as_int() == 0)
+		{
+			mapLevel = 0;
+			Engine::GetInstance().map->CleanUp();
+			Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+			Load();
+			enemyList[enemyList.size() - 1]->Disable();
+			Engine::GetInstance().audio.get()->StopMusic();
+			Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
+		}
+		if (configFile.child("config").child("scene").child("entities").child("player").attribute("level").as_int() == 1)
+		{
+			mapLevel = 1;
+			for (int y = 0; y < enemyList.size(); y++) {
+				enemyList[y]->Disable();
+			}
+			for (int y = 0; y < itemList.size(); y++) {
+				itemList[y]->Disable();
+			}
+			enemyList[enemyList.size() - 1]->Enable();
+			Engine::GetInstance().map->CleanUp();
+			Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
 			player->SetPosition({ 111, 192 });
+
+			Engine::GetInstance().audio.get()->StopMusic();
+			Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/King Boo Theme.ogg", 0.f);
 		}
 	}
 
@@ -310,7 +368,6 @@ bool Scene::PostUpdate()
 
 	return exit;
 }
-
 void Scene::Load()
 {
 	int i = 0;
@@ -328,10 +385,14 @@ void Scene::Load()
 	for (pugi::xml_node enemyNode = configFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
 	{
 		if (enemyNode.attribute("dead").as_bool()) enemyList[i]->Enable();
+		else enemyList[i]->Disable();
 		enemyList[i]->SetPosition({enemyNode.attribute("x").as_float(), enemyNode.attribute("y").as_float()});
 		i++;
 	}
-	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(),(float)configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_int() });
+	enemyList[enemyList.size() - 1]->Disable();
+	float y = configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_float();
+	if (mapLevel == 0 && y > 192) y = 192;
+	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(), y});
 }
 void Scene::Save()
 {
@@ -342,7 +403,15 @@ void Scene::Save()
 		LOG("ERROR");
 		return;
 	}
+	for (pugi::xml_node itemNode = saveFile.child("config").child("scene").child("entities").child("items").child("item"); itemNode; itemNode = itemNode.next_sibling("item"))
+	{
+		if (itemList[i]->taken == true)itemNode.attribute("taken").set_value(true);
+		else itemNode.attribute("taken").set_value(false);
 
+		i++;
+		if (i >= itemList.size() - 1) break;
+	}
+	i = 0;
 	for (pugi::xml_node enemyNode = saveFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
 	{
 		enemyNode.attribute("dead").set_value(enemyList[i]->active);
@@ -354,10 +423,30 @@ void Scene::Save()
 	Vector2D playerPos = player->GetPosition();
 	saveFile.child("config").child("scene").child("entities").child("player").attribute("x").set_value(playerPos.getX() - 8);
 	saveFile.child("config").child("scene").child("entities").child("player").attribute("y").set_value(playerPos.getY() - 8);
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("level").set_value(mapLevel);
 
 	saveFile.save_file("config.xml");//save modified file 
 }
 
+void Scene::StartNewGame()
+{
+	int i = 0;
+	pugi::xml_document saveFile;
+	pugi::xml_parse_result result = saveFile.load_file("startConfig.xml");
+	if (result == NULL) {
+		LOG("ERROR");
+		return;
+	}
+	for (pugi::xml_node enemyNode = saveFile.child("config").child("scene").child("entities").child("enemies").child("enemy"); enemyNode; enemyNode = enemyNode.next_sibling("enemy"))
+	{
+		enemyList[i]->Enable();
+		enemyList[i]->SetPosition({ enemyNode.attribute("x").as_float(), enemyNode.attribute("y").as_float() });
+		i++;
+	}
+	enemyList[enemyList.size() - 1]->Disable();
+	player->SetPosition({saveFile.child("config").child("scene").child("entities").child("player").attribute("x").as_float() ,saveFile.child("config").child("scene").child("entities").child("player").attribute("y").as_float()});
+
+}
 // Called before quitting
 bool Scene::CleanUp()
 {
@@ -438,7 +527,51 @@ bool Scene::OnGuiMouseClickEvent(GuiControl* control)
 		activeMenu = false;
 		Engine::GetInstance().map.get()->noUpdate = false;
 		inGameTimer.Start();
+
+		if (configFile.child("config").child("scene").child("entities").child("player").attribute("level").as_int() == 0)
+		{
+			mapLevel = 0;
+			Engine::GetInstance().map->CleanUp();
+			Engine::GetInstance().map->Load("Assets/Maps/", "Stage 1.tmx");
+			Load();
+			enemyList[enemyList.size() - 1]->Disable();
+			Engine::GetInstance().audio.get()->StopMusic();
+			Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
+		}
+		if (configFile.child("config").child("scene").child("entities").child("player").attribute("level").as_int() == 1)
+		{
+			mapLevel = 1;
+			for (int y = 0; y < enemyList.size(); y++) {
+				enemyList[y]->Disable();
+			}
+			for (int y = 0; y < itemList.size(); y++) {
+				itemList[y]->Disable();
+			}
+			enemyList[enemyList.size() - 1]->Enable();
+			Engine::GetInstance().map->CleanUp();
+			Engine::GetInstance().map->Load("Assets/Maps/", "Stage 2.tmx");
+			player->SetPosition({ 111, 192 });
+
+			Engine::GetInstance().audio.get()->StopMusic();
+			Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/King Boo Theme.ogg", 0.f);
+		}
+	}
+	else if (control->id == 8) {
+		mapLevel = 0;
+
+		CreditstBt->state = GuiControlState::DISABLED;
+		ContinuetBt->state = GuiControlState::DISABLED;
+		StartBt->state = GuiControlState::DISABLED;
+		SettingsBt->state = GuiControlState::DISABLED;
+		ScapeBt->state = GuiControlState::DISABLED;
+
+		StartNewGame();
+		activeMenu = false;
+		Engine::GetInstance().map.get()->noUpdate = false;
+		inGameTimer.Start();
+
 		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
+
 	}
 
 	return true;

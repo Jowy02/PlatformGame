@@ -38,7 +38,7 @@ bool GuiControlButton::Update(float dt)
 			Vector2D mousePos = Engine::GetInstance().input->GetMousePosition();
 		
 			//If the position of the mouse if inside the bounds of the button 
-			if (mousePos.getX()*2 > bounds.x && mousePos.getX() * 2 < bounds.x + bounds.w && mousePos.getY() * 2 > bounds.y && mousePos.getY() * 2 < bounds.y + bounds.h) {
+			if (mousePos.getX()*2 > bounds.x && mousePos.getX() * 2 < bounds.x + bounds.w && mousePos.getY() * 2 > bounds.y && mousePos.getY() * 2 < bounds.y + bounds.h && state != GuiControlState::JUST_VISIBLE) {
 		
 				state = GuiControlState::FOCUSED;
 
@@ -50,15 +50,20 @@ bool GuiControlButton::Update(float dt)
 					NotifyObserver();
 				}
 			}
-			else {
+			else if( state != GuiControlState::JUST_VISIBLE){
 				state = GuiControlState::NORMAL;
 			}
 
 			//L16: TODO 4: Draw the button according the GuiControl State
+			int scaleText = text.length();
 			switch (state)
 			{
 			case GuiControlState::DISABLED:
 				Engine::GetInstance().render->DrawRectangle(bounds, 200, 200, 200, 255, true, false);
+				break;
+			case GuiControlState::JUST_VISIBLE:
+				Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, scaleText * 10, bounds.h);
+				Engine::GetInstance().render->DrawRectangle(bounds, 138,149, 151, 255, true, false);
 				break;
 			case GuiControlState::NORMAL:
 				Engine::GetInstance().render->DrawRectangle(bounds, 0, 0, 255, 255, true, false);
@@ -70,7 +75,6 @@ bool GuiControlButton::Update(float dt)
 				Engine::GetInstance().render->DrawRectangle(bounds, 0, 255, 0, 255, true, false);
 				break;
 			}
-			int scaleText = text.length();
 			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, scaleText*10, bounds.h);
 		}
 	}

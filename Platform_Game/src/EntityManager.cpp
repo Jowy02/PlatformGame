@@ -113,6 +113,12 @@ bool EntityManager::Update(float dt)
 	{
 		if (entity->active == false) continue;
 		ret = entity->Update(dt);
+
+		float cameraPos = -Engine::GetInstance().render.get()->camera.x;
+		if(entity->position.getX() <= cameraPos/260 && entity->position.getX() >= (cameraPos / 2)-50){
+			ret = entity->Update(dt);
+
+		}
 	}
 	return ret;
 }

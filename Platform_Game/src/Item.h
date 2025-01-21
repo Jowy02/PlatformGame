@@ -21,13 +21,10 @@ public:
 
 	bool CleanUp();
 
-	void SetParameters(pugi::xml_node parameters) {
+	void SetParameters(pugi::xml_node parameters, int id) {
 		this->parameters = parameters;
 	}
-
-public:
-
-	bool isPicked = false;
+	bool taken = false;
 
 private:
 

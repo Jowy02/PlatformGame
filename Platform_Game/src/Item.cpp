@@ -40,7 +40,6 @@ bool Item::Start() {
 	else if (parameters.attribute("type").as_int() == 1) pbody->ctype = ColliderType::BOOST;
 	else if (parameters.attribute("type").as_int() == 2) pbody->ctype = ColliderType::HEAL;
 
-
 	// Set the gravity of the body
 	if (!parameters.attribute("gravity").as_bool()) pbody->body->SetGravityScale(0);
 
@@ -50,7 +49,6 @@ bool Item::Start() {
 bool Item::Update(float dt)
 {
 	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics.  
-
 	b2Transform pbodyPos = pbody->body->GetTransform();
 	position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 	position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
