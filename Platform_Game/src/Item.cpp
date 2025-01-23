@@ -49,6 +49,7 @@ bool Item::Start() {
 bool Item::Update(float dt)
 {
 	// L08 TODO 4: Add a physics to an item - update the position of the object from the physics.  
+	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
 	b2Transform pbodyPos = pbody->body->GetTransform();
 	position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 	position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);

@@ -341,7 +341,6 @@ bool Scene::PostUpdate()
 			ChangeLevel(0);
 			Load();
 		}
-
 	}
 
 	//hacer en funcion Save() aparte y llamarla desde aqui
@@ -394,6 +393,9 @@ void Scene::Load()
 	enemyList[enemyList.size() - 1]->Disable();
 	float y = configFile.child("config").child("scene").child("entities").child("player").attribute("y").as_float();
 
+	player->coins = configFile.child("config").child("scene").child("entities").child("player").attribute("coins").as_int();
+	player->health = configFile.child("config").child("scene").child("entities").child("player").attribute("hp").as_int();
+
 	if (mapLevel == 0 && y > 192) y = 192;
 	player->SetPosition({ (float)configFile.child("config").child("scene").child("entities").child("player").attribute("x").as_int(), y});
 }
@@ -421,6 +423,9 @@ void Scene::Save()
 	}
 
 	Vector2D playerPos = player->GetPosition();
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("coins").set_value(player->coins);
+	saveFile.child("config").child("scene").child("entities").child("player").attribute("hp").set_value(player->health);
+
 	saveFile.child("config").child("scene").child("entities").child("player").attribute("x").set_value(playerPos.getX() - 8);
 	saveFile.child("config").child("scene").child("entities").child("player").attribute("y").set_value(playerPos.getY() - 8);
 	saveFile.child("config").child("scene").child("entities").child("player").attribute("level").set_value(mapLevel);
@@ -442,6 +447,10 @@ void Scene::StartNewGame()
 		i++;
 	}
 	enemyList[enemyList.size() - 1]->Disable();
+
+	player->coins = saveFile.child("config").child("scene").child("entities").child("player").attribute("coins").as_int();
+	player->health = saveFile.child("config").child("scene").child("entities").child("player").attribute("hp").as_int();
+
 	player->SetPosition({saveFile.child("config").child("scene").child("entities").child("player").attribute("x").as_float() ,saveFile.child("config").child("scene").child("entities").child("player").attribute("y").as_float()});
 	ChangeLevel(0);
 }
