@@ -176,9 +176,7 @@ bool Enemy::Update(float dt)
 					hitColdwon++;
 					currentAnimation = &hit;
 				}
-
 			}
-
 			boosPath++;
 		}
 
