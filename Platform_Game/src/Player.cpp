@@ -258,20 +258,17 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 	switch (physB->ctype)
 	{
 	case ColliderType::PLATFORM:
-		LOG("Collision PLATFORM");
 		//reset the jump flag when touching the ground
 		isJumping = false;
 		kill = false;
 		break;
 	case ColliderType::ITEM:
-		LOG("Collision ITEM");
 		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
 		Engine::GetInstance().scene.get()->itemList[physB->id]->taken = true;
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		coins++;
 		break;
 	case ColliderType::BOOST:
-		LOG("Collision ITEM");
 		Engine::GetInstance().audio.get()->PlayFx(powerUp);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		plusVel = true;
@@ -279,7 +276,6 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 
 		break;
 	case ColliderType::HEAL:
-		LOG("Collision ITEM");
 		Engine::GetInstance().audio.get()->PlayFx(hpUp);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		if (health < 200){
@@ -288,10 +284,8 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		}
 		break;
 	case ColliderType::ENEMY:
-		LOG("Collision ENEMY");
 		break;
 	case ColliderType::UNKNOWN:
-		LOG("Collision UNKNOWN");
 		break;
 	default:
 		break;
@@ -303,14 +297,11 @@ void Player::OnCollisionEnd(PhysBody* physA, PhysBody* physB)
 	switch (physB->ctype)
 	{
 	case ColliderType::PLATFORM:
-		LOG("End Collision PLATFORM");
 		break;
 	case ColliderType::ITEM:
-		LOG("End Collision ITEM");
 // Deletes the body of the item from the physics world
 		break;
 	case ColliderType::UNKNOWN:
-		LOG("End Collision UNKNOWN");
 		break;
 	default:
 		break;

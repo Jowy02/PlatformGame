@@ -101,6 +101,8 @@ bool Scene::Start()
 	Transition = Engine::GetInstance().textures.get()->Load("Assets/Textures/Next_Stage.png");
 	CreditsM = Engine::GetInstance().textures.get()->Load("Assets/Textures/Credits.png");
 	startM = Engine::GetInstance().textures.get()->Load("Assets/Textures/Intro_Screen.png");
+	endM = Engine::GetInstance().textures.get()->Load("Assets/Textures/End_Screen.png");
+
 
 	check = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
 
@@ -180,7 +182,13 @@ bool Scene::PreUpdate()
 			Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Stage Clear.ogg", 0.f);
 		}
 		transitionCnt++;
+		if (transitionCnt > 200 && transitionCnt < 350) {
+			endTransition = true;
+		}
+
 		if (transitionCnt >= 350) {
+			endTransition = false;
+			player->settings = false;
 
 			SDL_Rect btPos = { 350, 363, 100,25 };
 			SettingsBt->bounds = btPos;
@@ -217,7 +225,7 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	SDL_Rect sliderKnob = { 200, 10, player->health,20 };
+	SDL_Rect sliderKnob = { 210, 10, player->health,20 };
 	set = player->settings;
 	//L03 TODO 3: Make the camera movement independent of framerate
 	if (!activeMenu) {
@@ -242,7 +250,7 @@ bool Scene::Update(float dt)
 		Engine::GetInstance().render->DrawText("COINS:", 10, 10, 40, 20);
 		Engine::GetInstance().render->DrawText(std::to_string(player->coins).c_str(), 60, 10, 10, 20);
 
-		Engine::GetInstance().render->DrawText("HEALTH:", 160, 10, 40, 20);
+		Engine::GetInstance().render->DrawText("HEALTH:", 150, 10, 60, 20);
 		Engine::GetInstance().render->DrawRectangle(sliderKnob, 255, 0, 0, 255, true, false);
 
 		Engine::GetInstance().render->DrawText("Timer:", 590, 10, 40, 20);
@@ -260,7 +268,7 @@ bool Scene::Update(float dt)
 	}
 	if (activeMenu){
 		Engine::GetInstance().render.get()->camera.x = 0;
-		if(transitionCnt >50){
+		if(onlyStart){
 			if(!player->settings)Engine::GetInstance().render.get()->DrawTexture(Menu, 0, 0);
 			else Engine::GetInstance().render.get()->DrawTexture(SettingM, 0, 0);
 			if(credits)Engine::GetInstance().render.get()->DrawTexture(CreditsM, 0, 0);
@@ -276,12 +284,19 @@ bool Scene::Update(float dt)
 				SettingsBt->state = GuiControlState::NORMAL;
 				ContinuetBt->state = GuiControlState::JUST_VISIBLE;
 			}
+			if (transitionCnt > 50)onlyStart = true;
 		}
 		Engine::GetInstance().map.get()->noUpdate = true;
 	}
 	if (player->settings && !activeMenu) {
 		Engine::GetInstance().render.get()->camera.x = 0;
 		Engine::GetInstance().render.get()->DrawTexture(SettingM, 0, 0);
+		Engine::GetInstance().map.get()->noUpdate = true;
+	}
+	if (endTransition) {
+		player->settings = true;
+		Engine::GetInstance().render.get()->camera.x = 0;
+		Engine::GetInstance().render.get()->DrawTexture(endM, 0, 0);
 		Engine::GetInstance().map.get()->noUpdate = true;
 	}
 	else Engine::GetInstance().map.get()->noUpdate = false;

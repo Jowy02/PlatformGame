@@ -101,16 +101,18 @@ private:
 
 	bool Fullscreen = false;
 	bool saveGame;
-	 
+	bool onlyStart = false;
 	SDL_Texture* Menu = nullptr;
 	SDL_Texture* Transition = nullptr;
 	SDL_Texture* SettingM = nullptr;
 	SDL_Texture* CreditsM = nullptr;
 	SDL_Texture* startM = nullptr;
+	SDL_Texture* endM = nullptr;
+
 	
 	bool showTransition = false;
 	bool credits = false;
-
+	bool endTransition = false;
 	int transitionCnt = 0;
 
 	Timer inGameTimer;
