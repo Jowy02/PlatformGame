@@ -18,14 +18,12 @@ Player::~Player() {
 
 }
 
-
 bool Player::Awake() {
 
 	//L03: TODO 2: Initialize Player parameters
 	position = Vector2D(0, 0);
 	savePos = Vector2D(0, 0);
 	return true;
-
 }
 
 bool Player::Start() {
@@ -67,11 +65,11 @@ bool Player::Start() {
 	enemyKillSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Kick.ogg");
 	dieSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Music/Mario Dies.ogg");
 	hitSfx = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/Bump.ogg");
-
+	powerUp = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/PowerUp.ogg");
+	hpUp = Engine::GetInstance().audio.get()->LoadFx("Assets/Audio/Fx/1Up.ogg");
 	
 	return true;
 }
-
 
 bool Player::Update(float dt)
 {	
@@ -88,57 +86,50 @@ bool Player::Update(float dt)
 
 			godmode = false;
 		}
-		else{
+		else {
 			deadAnimation = false;
 			oneTime = false;
 			godmode = true;
 		}
 	}
 
-	if(godmode==false){	
+	if(!godmode && !settings){	
 		if(!deadAnimation && !hitL && !hitR && health>0)
 		{
 			// Move left
-			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_H) == KEY_DOWN) LOG("PLAYER POS : %d", position.getX());
-			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
-			{
+			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
 				velocity.x = -marioVel * dt;
 				currentAnimation = &backwalk;
 				look = true;
 			}
 
 			// Move right
-			else if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-			{
+			else if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 				velocity.x = marioVel * dt;
 				currentAnimation = &walk;
 				look = false;
 			}
-			else{
+			else {
 				if(look)currentAnimation = &backidle;
 				else currentAnimation = &idle;
 			}
 
 			//Jump
-			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && isJumping == false || kill)
-			{
+			if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && isJumping == false || kill){
 				// Apply an initial upward force
 				if (!kill)Engine::GetInstance().audio.get()->PlayFx(jumpSfx);
 				else Engine::GetInstance().audio.get()->PlayFx(enemyKillSfx);
+
 				pbody->body->ApplyLinearImpulseToCenter(b2Vec2(0, -jumpForce), true);
 				isJumping = true;
 				kill = false;
 			}
 
 			// If the player is jumpling, we don't want to apply gravity, we use the current velocity prduced by the jump
-			if(isJumping)
-			{
+			if(isJumping){
 				velocity.y = pbody->body->GetLinearVelocity().y;
 
-				if (look)
-				{
-					currentAnimation = &backjump; 
-				}
+				if (look) currentAnimation = &backjump; 
 				else currentAnimation = &jump;
 			}
 
@@ -149,8 +140,7 @@ bool Player::Update(float dt)
 			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
 		}
-		else if (deadAnimation)
-		{
+		else if (deadAnimation) {
 			currentAnimation = &dead;
 
 			if(!oneTime){
@@ -165,11 +155,8 @@ bool Player::Update(float dt)
 			b2Transform pbodyPos = pbody->body->GetTransform();
 			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
-
 		}
-		else if (hitL)
-		{
-			
+		else if (hitL) {
 			if (cnt <= 10)
 			{
 				currentAnimation = &dead;
@@ -187,13 +174,9 @@ bool Player::Update(float dt)
 				health -=10;
 				cnt = 0;
 			}
-
 		}
-		else if (hitR)
-		{
-
-			if (cnt <= 10)
-			{
+		else if (hitR) {
+			if (cnt <= 10) {
 				currentAnimation = &dead;
 
 				velocity.x = 0.2 * dt;
@@ -227,7 +210,6 @@ bool Player::Update(float dt)
 			position.setX(METERS_TO_PIXELS(pbodyPos.p.x) - texH / 2);
 			position.setY(METERS_TO_PIXELS(pbodyPos.p.y) - texH / 2);
 			cnt++;
-			
 		}
 		if ((int)position.getY() >= 270) deadAnimation = true;
 
@@ -237,13 +219,14 @@ bool Player::Update(float dt)
 			if (coldown >= 200) {
 				marioVel = 0.2f;
 				plusVel = false;
+				Engine::GetInstance().audio.get()->StopMusic();
+				Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Ground Theme.ogg", 0.f);
+
 			}
 		}
-
 	}
 
-	else
-	{
+	else if (godmode){
 		if (Engine::GetInstance().input.get()->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 			position.setY(position.getY() - speed);
 
@@ -257,8 +240,6 @@ bool Player::Update(float dt)
 			position.setX(position.getX() + speed);
 	}
 	
-
-
 	Engine::GetInstance().render.get()->DrawTexture(texture, (int)position.getX(), (int)position.getY(), &currentAnimation->GetCurrentFrame());
 	currentAnimation->Update();
 	return true;
@@ -291,14 +272,15 @@ void Player::OnCollision(PhysBody* physA, PhysBody* physB) {
 		break;
 	case ColliderType::BOOST:
 		LOG("Collision ITEM");
-		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+		Engine::GetInstance().audio.get()->PlayFx(powerUp);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		plusVel = true;
-		
+		Engine::GetInstance().audio.get()->PlayMusic("Assets/Audio/Music/Star Theme.ogg", 0.f);
+
 		break;
 	case ColliderType::HEAL:
 		LOG("Collision ITEM");
-		Engine::GetInstance().audio.get()->PlayFx(pickCoinFxId);
+		Engine::GetInstance().audio.get()->PlayFx(hpUp);
 		Engine::GetInstance().physics.get()->DeletePhysBody(physB);
 		if (health < 200){
 			health += 50;

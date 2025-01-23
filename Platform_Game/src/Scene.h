@@ -8,7 +8,11 @@
 #include "GuiControlButton.h"
 
 struct SDL_Texture;
-
+enum buttonInteract
+{
+	TITLE,RESUME,SETTINGS,EXIT,MUSIC,FX,
+	FULL_SCREEN,CONTINUE,START,CREDITS
+};
 class Scene : public Module
 {
 public:
@@ -42,7 +46,7 @@ public:
 	void Save();
 	void Load();
 	void StartNewGame();
-
+	void ChangeLevel(int level);
 
 	bool OnGuiMouseClickEvent(GuiControl* control);
 
@@ -52,15 +56,13 @@ public:
 	// Get tilePosDebug value
 	std::string GetTilePosDebug() {
 		return tilePosDebug;
-
 	}
-	int mapLevel = 0;
 
 	std::vector<Enemy*> enemyList;
 	std::vector<Item*> itemList;
 
-
 	bool activeMenu = true;
+	int mapLevel = 0;
 
 private:
 	SDL_Texture* img;
@@ -100,6 +102,10 @@ private:
 	bool Fullscreen = false;
 
 	SDL_Texture* Menu = nullptr;
+	SDL_Texture* Transition = nullptr;
+	bool showTransition = false;
+	int transitionCnt = 0;
+
 	Timer inGameTimer;
 	int minutes = 0;
 };

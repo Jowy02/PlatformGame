@@ -163,7 +163,7 @@ bool Enemy::Update(float dt)
 					fase++;
 					if (fase == 2)currentAnimation = &invisible_idle_L;
 					else if (fase!=3) currentAnimation = &idle_L;
-
+					if (fase == 3) endFight = true;
 					boosPath = 0;
 					if (fase != 3){
 						b2Vec2 bodyPos = b2Vec2(PIXEL_TO_METERS(700), PIXEL_TO_METERS(50));
@@ -191,15 +191,9 @@ bool Enemy::Update(float dt)
 	}
 	else {
 
-
-		if (playerNear && !flyingEnemy)
-		{
-			pathfinding->PropagateBFS();
-		}
-		else if (playerNear && flyingEnemy )
-		{
-			pathfinding->PropagateDijkstra();
-		}
+		if (playerNear && !flyingEnemy) pathfinding->PropagateBFS();
+		else if (playerNear && flyingEnemy ) pathfinding->PropagateDijkstra();
+		
 
 		if (pathfinding->expansionCnt >= pathfinding->maxExpansion && !found || rest)
 		{

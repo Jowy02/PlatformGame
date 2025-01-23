@@ -41,6 +41,7 @@ public:
 	bool startFight = false;
 	bool hited = false;
 
+	bool endFight = false;
 private:
 
 	SDL_Texture* texture;

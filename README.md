@@ -16,6 +16,7 @@ This first approach of the project uses Mario Bros mechanics, sprites and Level 
      * F4 = Respawn Enemies
      * F5 = Save Game
      * F6 = Load Game from last Save
+     * F7 = Move between the different checkpoints
      * F9 = Visualize the colliders/logic
      * F10 = God Mode (fly around, cannot be killed)
      * F11 = Enable/Disable FPS cap to 30

@@ -66,7 +66,7 @@ bool GuiControlButton::Update(float dt)
 				Engine::GetInstance().render->DrawRectangle(bounds, 138,149, 151, 255, true, false);
 				break;
 			case GuiControlState::NORMAL:
-				Engine::GetInstance().render->DrawRectangle(bounds, 0, 0, 255, 255, true, false);
+				Engine::GetInstance().render->DrawRectangle(bounds, 128, 64, 0, 255, true, false);
 				break;
 			case GuiControlState::FOCUSED:
 				Engine::GetInstance().render->DrawRectangle(bounds, 0, 0, 20, 255, true, false);

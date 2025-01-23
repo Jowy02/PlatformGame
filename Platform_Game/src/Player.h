@@ -48,8 +48,9 @@ public:
 	int jumpSfx;
 	int dieSfx;
 	int enemyKillSfx;
+	int hpUp;
+	int powerUp;
 	int hitSfx;
-
 
 	// L08 TODO 5: Add physics to the player - declare a Physics body
 	PhysBody* pbody;
@@ -74,6 +75,8 @@ public:
 
 	bool plusVel = false;
 	int coldown = 0;
+
+	bool settings = false;
 
 	pugi::xml_node parameters;
 	Animation* currentAnimation = nullptr;
