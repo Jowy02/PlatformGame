@@ -10,7 +10,7 @@ This first approach of the project uses Mario Bros mechanics, sprites, and Level
      * A = Move player left
      * D = Move player right
      * SPACE = Jump
-     * ESC = Pause
+     * ESCAPE = Pause
 
 ### Debug Mode
      * H = Shows/hides a help menu showing the keys
