@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="155" y= "192" w="15" h="15" level="0" hp ="200" coins ="0" texture="Assets/Textures/player/Mario.png">
+			<player x="155" y= "192" w="15" h="15" level="0" hp ="200" coins ="0"  texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />

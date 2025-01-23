@@ -23,6 +23,9 @@ private:
 	int maxValue;
 	bool isChecked;
 	SDL_Rect sliderKnob;
+
+	int scaleX = 12;
+	int scaleY = 5;
 };
 
 #pragma once

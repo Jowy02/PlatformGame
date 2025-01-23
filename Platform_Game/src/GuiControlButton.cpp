@@ -23,10 +23,7 @@ GuiControlButton::GuiControlButton(int id, SDL_Rect bounds, const char* text) : 
 }
 
 GuiControlButton::~GuiControlButton()
-{
-
-}
-
+{}
 
 bool GuiControlButton::Update(float dt)
 {
@@ -62,7 +59,6 @@ bool GuiControlButton::Update(float dt)
 				Engine::GetInstance().render->DrawRectangle(bounds, 200, 200, 200, 255, true, false);
 				break;
 			case GuiControlState::JUST_VISIBLE:
-				Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, scaleText * 10, bounds.h);
 				Engine::GetInstance().render->DrawRectangle(bounds, 138,149, 151, 255, true, false);
 				break;
 			case GuiControlState::NORMAL:
@@ -75,7 +71,11 @@ bool GuiControlButton::Update(float dt)
 				Engine::GetInstance().render->DrawRectangle(bounds, 0, 255, 0, 255, true, false);
 				break;
 			}
-			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y, scaleText*10, bounds.h);
+			int center = 1;
+			if (scaleText == 4)center = 24;
+			else if (scaleText < 7)center = 20;
+			else if (scaleText == 7)center = 10;
+			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x+ center, bounds.y+3, scaleText* scaleX, bounds.h - scaleY);
 		}
 	}
 	else if (GuiControl::type == GuiControlType::SLIDER)
@@ -132,11 +132,11 @@ bool GuiControlButton::Update(float dt)
 
 			// Dibujar el texto del slider y el valor actual
 			int scaleText = text.length();
-			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y - 20,scaleText*10, 20);
+			Engine::GetInstance().render->DrawText(text.c_str(), bounds.x, bounds.y - 20,scaleText* scaleX, 20);
 			scaleText = 1;
 			if (value > 10)scaleText = 2;
 			if (value == 100)scaleText = 3;
-			Engine::GetInstance().render->DrawText(std::to_string(value).c_str(), bounds.x + bounds.w + 10, bounds.y, scaleText*10, bounds.h);
+			Engine::GetInstance().render->DrawText(std::to_string(value).c_str(), bounds.x + bounds.w + 10, bounds.y, scaleText* scaleX, bounds.h );
 		}
 	}
 	else if (GuiControl::type == GuiControlType::CHECKBOX) {
@@ -175,7 +175,6 @@ bool GuiControlButton::Update(float dt)
 				break;
 			}
 		
-
 		// Dibujar el contenido del checkbox
 		// Dibujar un rectángulo dentro si está seleccionado
 		if (isChecked)
@@ -185,7 +184,9 @@ bool GuiControlButton::Update(float dt)
 		}
 
 		// Dibujar el texto junto al checkbox
-		Engine::GetInstance().render->DrawText(text.c_str(), bounds.x + bounds.w + 10, bounds.y, 100, bounds.h);
+		int scaleText = text.length();
+
+		Engine::GetInstance().render->DrawText(text.c_str(), bounds.x + bounds.w + 10, bounds.y+5, scaleText* scaleX, bounds.h - scaleY);
 		}
 
 	}

@@ -73,7 +73,7 @@ bool Player::Start() {
 
 bool Player::Update(float dt)
 {	
-	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
+	if (Engine::GetInstance().scene.get()->activeMenu == true || settings) return true;
 
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	// L08 TODO 5: Add physics to the player - updated player position using physics

@@ -16,7 +16,6 @@ enum buttonInteract
 class Scene : public Module
 {
 public:
-
 	Scene();
 
 	// Destructor
@@ -63,6 +62,7 @@ public:
 
 	bool activeMenu = true;
 	int mapLevel = 0;
+	bool set = false;
 
 private:
 	SDL_Texture* img;
@@ -100,10 +100,17 @@ private:
 	GuiControlButton* FulScreenCb;
 
 	bool Fullscreen = false;
-
+	bool saveGame;
+	 
 	SDL_Texture* Menu = nullptr;
 	SDL_Texture* Transition = nullptr;
+	SDL_Texture* SettingM = nullptr;
+	SDL_Texture* CreditsM = nullptr;
+	SDL_Texture* startM = nullptr;
+	
 	bool showTransition = false;
+	bool credits = false;
+
 	int transitionCnt = 0;
 
 	Timer inGameTimer;

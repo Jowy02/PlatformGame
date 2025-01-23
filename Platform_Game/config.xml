@@ -18,7 +18,7 @@
 		<map path="Assets/Maps/" name="Stage 1.tmx" />
 		<map1 path="Assets/Maps/" name="Stage 2.tmx" />
 		<entities>
-			<player x="1316" y="192" w="15" h="15" level="0" hp="120" coins="4" texture="Assets/Textures/player/Mario.png">
+			<player x="2184" y="126" w="15" h="15" level="0" hp="200" coins="0" save="1" texture="Assets/Textures/player/Mario.png">
 				<animations>
 					<idle loop="true" speed="0.1">
 						<frame x="0" y="0" w="16" h="16" />
@@ -52,7 +52,7 @@
 				</animations>
 			</player>
 			<items>
-				<item name="coin" x="848" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" taken="true" type="0">
+				<item name="coin" x="848" y="96" w="16" h="16" texture="Assets/Textures/goldCoin.png" gravity="false" taken="false" type="0">
 					<animations>
 						<idle loop="true" speed="0.5">
 							<frame x="0" y="0" w="16" h="16" />
@@ -126,7 +126,7 @@
 				</item>
 			</items>
 			<enemies>
-				<enemy name="Goomba" x="123" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false" boss="false">
+				<enemy name="Goomba" x="219" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false" boss="false">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />
@@ -137,7 +137,7 @@
 						</dead>
 					</animations>
 				</enemy>
-				<enemy name="Goomba" x="1677" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="true" flying="false" boss="false">
+				<enemy name="Goomba" x="1661" y="192" w="16" h="16" texture="Assets/Textures/enemy/Goomba.png" gravity="true" dead="false" flying="false" boss="false">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />
@@ -156,7 +156,7 @@
 						</idle>
 					</animations>
 				</enemy>
-				<enemy name="Boo" x="1191" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true" boss="false">
+				<enemy name="Boo" x="1125" y="144" w="16" h="16" texture="Assets/Textures/enemy/Boo.png" gravity="true" dead="true" flying="true" boss="false">
 					<animations>
 						<idle loop="true" speed="0.1">
 							<frame x="0" y="0" w="16" h="16" />

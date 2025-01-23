@@ -70,7 +70,7 @@ bool Enemy::Update(float dt)
 {
 	b2Vec2 velocity = b2Vec2(0, pbody->body->GetLinearVelocity().y);
 	Vector2D enemyPos = GetPosition();
-	if (Engine::GetInstance().scene.get()->activeMenu == true) return true;
+	if (Engine::GetInstance().scene.get()->activeMenu == true || Engine::GetInstance().scene.get()->set == true) return true;
 
 	if (boss)
 	{
